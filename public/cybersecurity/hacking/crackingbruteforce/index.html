@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>🔐 Cracking &amp; Brute Force | Conper</title>
+<meta name="keywords" content="">
+<meta name="description" content="Breaking passwords and encryption through dictionary attacks, brute-force methods, hash cracking, and credential stuffing techniques.">
+<meta name="author" content="">
+<link rel="canonical" href="https://conper.xyz/cybersecurity/hacking/crackingbruteforce/">
+<link crossorigin="anonymous" href="https://conper.xyz/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://conper.xyz/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://conper.xyz/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://conper.xyz/assets/favicon.ico">
+<link rel="apple-touch-icon" href="https://conper.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://conper.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://conper.xyz/cybersecurity/hacking/crackingbruteforce/index.xml">
+<link rel="alternate" hreflang="en" href="https://conper.xyz/cybersecurity/hacking/crackingbruteforce/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://conper.xyz/cybersecurity/hacking/crackingbruteforce/">
+  <meta property="og:site_name" content="Conper">
+  <meta property="og:title" content="🔐 Cracking & Brute Force">
+  <meta property="og:description" content="Breaking passwords and encryption through dictionary attacks, brute-force methods, hash cracking, and credential stuffing techniques.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="🔐 Cracking &amp; Brute Force">
+<meta name="twitter:description" content="">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Cybersecurity",
+      "item": "https://conper.xyz/cybersecurity/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Hacking",
+      "item": "https://conper.xyz/cybersecurity/hacking/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "🔐 Cracking \u0026 Brute Force",
+      "item": "https://conper.xyz/cybersecurity/hacking/crackingbruteforce/"
+    }
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://conper.xyz/" accesskey="h" title="Conper (Alt + H)">Conper</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://conper.xyz/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/writeups/" title="Writeups">
+                    <span>Writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/projects/" title="My Projects">
+                    <span>My Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/cybersecurity/" title="Cybersecurity">
+                    <span>Cybersecurity</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/it/" title="IT">
+                    <span>IT</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/about/" title="About Me">
+                    <span>About Me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    🔐 Cracking &amp; Brute Force
+  </h1>
+</header>
+<div class="post-content"><h2 id="table-of-contents">Table of Contents<a hidden class="anchor" aria-hidden="true" href="#table-of-contents">#</a></h2>
+<div style="background-color: rgba(255, 255, 255, 0.1); padding:10px; border-radius:8px;">
+<details>
+  <summary>🔑 Password Cracking</summary>
+<ul>
+<li><a href="#tools">Tools</a></li>
+<li><a href="#hash-types">Hash types</a></li>
+<li><a href="#cracking-modes">Cracking Modes</a></li>
+</ul>
+</details>
+<details>
+  <summary>💥 Brute Force / Dictionary</summary>
+<ul>
+<li><a href="#tools-1">Tools</a></li>
+<li><a href="#hydra-examples">Hydra Examples</a></li>
+<li><a href="#medusa-examples">Medusa Examples</a></li>
+<li><a href="#ncrack-examples">Ncrack Examples</a></li>
+</ul>
+</details>
+<details>
+  <summary>📂 Cracking Specific Files and Systems</summary>
+<ul>
+<li><a href="#decrypting-id_rsa-ssh-private-keys">Decrypting id_rsa SSH private keys</a></li>
+<li><a href="#decrypting-passwords-from-etcshadow">Decrypting passwords from /etc/shadow</a></li>
+<li><a href="#decrypting-keepass-database-passwords">Decrypting KeePass database passwords</a></li>
+<li><a href="#decrypting-zip-file-passwords">Decrypting ZIP file passwords</a></li>
+<li><a href="#decrypting-protected-pdf-files">Decrypting protected PDF files</a></li>
+</ul>
+</details>
+</div>
+<h2 id="password-cracking">Password Cracking<a hidden class="anchor" aria-hidden="true" href="#password-cracking">#</a></h2>
+<p><strong>Password cracking</strong> is the process of recovering passwords from data that has been stored in or transmitted by a computer system.</p>
+<hr>
+<h3 id="tools">Tools<a hidden class="anchor" aria-hidden="true" href="#tools">#</a></h3>
+<ul>
+<li>
+<p><strong>Hashcat</strong>: Advanced password recovery tool supporting GPU acceleration.</p>
+</li>
+<li>
+<p><strong>John the Ripper</strong>: Popular CPU-based password cracking tool with support for multiple hash types.</p>
+</li>
+</ul>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/johntheripper.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<hr>
+<h3 id="hash-types">Hash Types<a hidden class="anchor" aria-hidden="true" href="#hash-types">#</a></h3>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/hashingalg.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p><strong>MD5</strong>: Fast but insecure, widely used for legacy systems.</p>
+<pre tabindex="0"><code>Example: 5f4dcc3b5aa765d61d8327deb882cf99 → &#34;password&#34;
+</code></pre><p><strong>SHA1</strong>: Slightly more secure than MD5, but also vulnerable.</p>
+<pre tabindex="0"><code>Example: 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8 → &#34;password&#34;
+</code></pre><p><strong>NTLM</strong>: Used by Windows systems; weak against modern attacks.</p>
+<pre tabindex="0"><code>Example: 8846f7eaee8fb117ad06bdd830b7586c → &#34;password&#34;
+</code></pre><p><strong>bcrypt</strong>: Strong hashing algorithm with built-in salt and slow computation.</p>
+<pre tabindex="0"><code>Example: $2y$12$EXRkfkdmXn2gzds2SSitu.JG3r8sG3sJ3JDZf4F9nYq5YyNUI4/9e → &#34;password&#34;
+</code></pre><p>Use <a href="https://mattw.io/hashID/types"><strong>mattw.io</strong></a> to find the correct hash <strong>mode number</strong> (<strong>Hashcat</strong>) or <strong>format name</strong> (<strong>John the Ripper</strong>) before starting the attack.</p>
+<p>Hash identifier: <a href="https://www.dcode.fr/hash-identifier"><strong>dCode</strong></a></p>
+<hr>
+<h3 id="cracking-modes">Cracking Modes<a hidden class="anchor" aria-hidden="true" href="#cracking-modes">#</a></h3>
+<p><strong>Dictionary Attack</strong>: Tests each word from a wordlist against the hashes. Very fast if the password is a common or weak word.</p>
+<ul>
+<li><strong>Hashcat</strong>:</li>
+</ul>
+<pre tabindex="0"><code>hashcat -m 0 -a 0 hashes.txt wordlist.txt
+</code></pre><p>Uses MD5 (-m 0) in dictionary mode (-a 0) with wordlist.txt.</p>
+<ul>
+<li><strong>John the Ripper</strong>:</li>
+</ul>
+<pre tabindex="0"><code>john --wordlist=wordlist.txt hashes.txt
+</code></pre><p>Uses the specified wordlist to try matching hashes.</p>
+<hr>
+<p><strong>Brute-force Attack</strong>: Tries all possible combinations of characters until the correct one is found. Very slow for long passwords.</p>
+<ul>
+<li><strong>Hashcat</strong>:</li>
+</ul>
+<pre tabindex="0"><code>hashcat -m 0 -a 3 hashes.txt ?a?a?a?a
+</code></pre><p>Brute-forces all printable ASCII characters (?a) for 4-character passwords.</p>
+<ul>
+<li><strong>John the Ripper</strong>:</li>
+</ul>
+<pre tabindex="0"><code>john --incremental=All hashes.txt
+</code></pre><p>Tests all character combinations; “All” means all printable characters.</p>
+<hr>
+<p><strong>Mask Attack</strong>: Similar to brute-force but uses a known pattern to reduce the search space. Much faster when part of the password format is known.</p>
+<ul>
+<li><strong>Hashcat</strong>:</li>
+</ul>
+<pre tabindex="0"><code>hashcat -m 0 -a 3 hashes.txt ?u?l?l?l?l?d?d
+</code></pre><p>Pattern: 1 uppercase letter (?u), 4 lowercase letters (?l), and 2 digits (?d).</p>
+<ul>
+<li><strong>John the Ripper</strong>:</li>
+</ul>
+<pre tabindex="0"><code>john --mask=&#39;?u?l?l?l?l?d?d&#39; hashes.txt
+</code></pre><p>Same mask pattern, but using John’s syntax.</p>
+<div style="margin-top: 70px;"></div>
+<h2 id="brute-force--dictionary">Brute Force / Dictionary<a hidden class="anchor" aria-hidden="true" href="#brute-force--dictionary">#</a></h2>
+<p><strong>Brute force</strong> attacks involve systematically trying <strong>every possible combination</strong> of credentials until the correct one is found. <strong>Dictionary attacks</strong> are similar but use a <strong>predefined list</strong> of likely passwords (a <strong>dictionary</strong>) instead of trying every combination.</p>
+<hr>
+<h3 id="tools-1">Tools:<a hidden class="anchor" aria-hidden="true" href="#tools-1">#</a></h3>
+<ul>
+<li>
+<p><a href="https://github.com/vanhauser-thc/thc-hydra"><strong>Hydra</strong></a>: Fast and flexible password-cracking tool for multiple protocols.</p>
+</li>
+<li>
+<p><a href="https://github.com/jmk-foofus/medusa"><strong>Medusa</strong></a>: Parallelized login brute-forcer with wide protocol support.</p>
+</li>
+<li>
+<p><a href="https://github.com/nmap/ncrack"><strong>Ncrack</strong></a>: High-speed network authentication cracking tool, designed for large-scale network audits.</p>
+</li>
+</ul>
+<hr>
+<h3 id="hydra-examples">Hydra Examples<a hidden class="anchor" aria-hidden="true" href="#hydra-examples">#</a></h3>
+<p><strong>SSH:</strong></p>
+<pre tabindex="0"><code>hydra -l admin -P rockyou.txt ssh://example.com
+</code></pre><p><strong>HTTP POST login form:</strong></p>
+<pre tabindex="0"><code>hydra -l user -P rockyou.txt example.com http-post-form &#34;/login:username=^USER^&amp;password=^PASS^:Login failed&#34;
+</code></pre><p><strong>FTP:</strong></p>
+<pre tabindex="0"><code>hydra -l root -P passwords.txt ftp://example.com
+</code></pre><p><strong>SMB:</strong></p>
+<pre tabindex="0"><code>hydra -L users.txt -P passwords.txt smb://example.com
+</code></pre><hr>
+<h3 id="medusa-examples">Medusa Examples<a hidden class="anchor" aria-hidden="true" href="#medusa-examples">#</a></h3>
+<p><strong>FTP:</strong></p>
+<pre tabindex="0"><code>medusa -h example.com -u root -P passwords.txt -M ftp
+</code></pre><p><strong>RDP:</strong></p>
+<pre tabindex="0"><code>medusa -h example.com -u administrator -P passwords.txt -M rdp
+</code></pre><hr>
+<h3 id="ncrack-examples">Ncrack Examples<a hidden class="anchor" aria-hidden="true" href="#ncrack-examples">#</a></h3>
+<p><strong>SSH:</strong></p>
+<pre tabindex="0"><code>ncrack -p 22 -u admin -P rockyou.txt example.com
+</code></pre><p><strong>RDP:</strong></p>
+<pre tabindex="0"><code>ncrack -p 3389 -u administrator -P passwords.txt example.com
+</code></pre><div style="margin-top: 70px;"></div>
+<h2 id="cracking-specific-files-and-systems">Cracking Specific Files and Systems<a hidden class="anchor" aria-hidden="true" href="#cracking-specific-files-and-systems">#</a></h2>
+<p>This section shows how to crack passwords from different types of files and systems using John the Ripper.</p>
+<hr>
+<h3 id="decrypting-id_rsa-ssh-private-keys">Decrypting <code>id_rsa</code> SSH private keys<a hidden class="anchor" aria-hidden="true" href="#decrypting-id_rsa-ssh-private-keys">#</a></h3>
+<pre tabindex="0"><code>ssh2john id_rsa &gt; hash
+john --wordlist=/usr/share/wordlists/rockyou.txt hash
+john --show hash
+</code></pre><hr>
+<h3 id="decrypting-passwords-from-etcshadow">Decrypting passwords from <code>/etc/shadow</code><a hidden class="anchor" aria-hidden="true" href="#decrypting-passwords-from-etcshadow">#</a></h3>
+<ul>
+<li><strong>Option A</strong>: With <em><strong>/etc/passwd</strong></em> (<strong>recommended</strong>)</li>
+</ul>
+<pre tabindex="0"><code>unshadow passwd.txt shadow.txt &gt; unshadowed.txt
+john --wordlist=/usr/share/wordlists/rockyou.txt unshadowed.txt
+</code></pre><p>or specifying format:</p>
+<pre tabindex="0"><code>john --wordlist=/usr/share/wordlists/rockyou.txt unshadowed.txt --format=crypt
+</code></pre><ul>
+<li><strong>Option B</strong>: Only <em><strong>/etc/shadow</strong></em></li>
+</ul>
+<pre tabindex="0"><code>john --wordlist=/usr/share/wordlists/rockyou.txt shadow.txt
+</code></pre><blockquote>
+<p>📝 <strong>NOTE</strong>: Using only <em><strong>/etc/shadow</strong></em> works, but <strong>John</strong> will not have the <strong>full usernames</strong>; output may show only <strong>hashes</strong>.</p></blockquote>
+<hr>
+<h3 id="decrypting-keepass-database-passwords">Decrypting <code>KeePass</code> database passwords<a hidden class="anchor" aria-hidden="true" href="#decrypting-keepass-database-passwords">#</a></h3>
+<pre tabindex="0"><code>keepass2john dataset.kdbx &gt; hash
+john --wordlist=/usr/share/wordlists/rockyou.txt hash
+</code></pre><blockquote>
+<p>🚨 IMPORTANT: If you want to create a vulnerable .kdbx for testing, use this version:</p></blockquote>
+<pre tabindex="0"><code>wget https://github.com/keepassxreboot/keepassxc/releases/download/2.3.4/keepassxc-2.3.4-x86_64.AppImage
+</code></pre><hr>
+<h3 id="decrypting-zip-file-passwords">Decrypting <code>ZIP file</code> passwords<a hidden class="anchor" aria-hidden="true" href="#decrypting-zip-file-passwords">#</a></h3>
+<pre tabindex="0"><code>zip2john archivo.zip &gt; hash
+john hash
+</code></pre><hr>
+<h3 id="decrypting-protected-pdf-files">Decrypting protected <code>PDF files</code><a hidden class="anchor" aria-hidden="true" href="#decrypting-protected-pdf-files">#</a></h3>
+<pre tabindex="0"><code>pdf2john protected.pdf &gt; hash
+john --wordlist=/usr/share/wordlists/rockyou.txt hash
+</code></pre>
+
+</div>
+
+
+ 
+
+
+
+
+
+
+
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://conper.xyz/">Conper</a></span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

