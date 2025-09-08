@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Easy 🟢">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/easy/ripper/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -245,37 +245,37 @@ img:hover {
 </span></span></code></pre></div><blockquote>
 <p>📝 <strong>NOTE:</strong> Normally, the MAC addresses of VirtualBox virtual machines start with 08:</p></blockquote>
 <p>Now that we know its IP <strong>192.168.18.169</strong>, let&rsquo;s perform a port scan using <strong>NMAP</strong> to identify which ports are <strong>open</strong>, their <strong>services</strong>, and more information.</p>
-<p><img alt="01" loading="lazy" src="../../../images/writeups/ripper/1.png"></p>
+<p><img alt="01" loading="lazy" src="https://conper.github.io/images/writeups/ripper/1.png"></p>
 <h6>NMAP scan</h6>
 <p>So now that we know it has ports <strong>22</strong> and <strong>80</strong> open, let&rsquo;s access the web page hosted on this machine to see if we can find any useful information.</p>
-<p><img alt="02" loading="lazy" src="../../../images/writeups/ripper/2.png"></p>
+<p><img alt="02" loading="lazy" src="https://conper.github.io/images/writeups/ripper/2.png"></p>
 <p>It tells us that the website is under maintenance, nothing more. So, I decide to use <a href="https://github.com/OJ/gobuster"><strong>Gobuster</strong></a> to enumerate subdirectories, and I come across a text file named <em><strong>staff_statements.txt</strong></em>:</p>
-<p><img alt="03" loading="lazy" src="../../../images/writeups/ripper/3.png"></p>
+<p><img alt="03" loading="lazy" src="https://conper.github.io/images/writeups/ripper/3.png"></p>
 <h6>Gobuster enumeration</h6>
-<p><img alt="04" loading="lazy" src="../../../images/writeups/ripper/4.png"></p>
+<p><img alt="04" loading="lazy" src="https://conper.github.io/images/writeups/ripper/4.png"></p>
 <h6>staff_statements.txt</h6>
 <p>The site is not yet repaired. Technicians are working on it by using <strong>old SSH connection files</strong>. Although the message doesn&rsquo;t specify which files, I inferred it could involve older key files like <em><strong>id_rsa.bak</strong></em> rather than the current <em><strong>id_rsa</strong></em>. I searched for these old files, found them, and proceeded to download them.</p>
-<p><img alt="05" loading="lazy" src="../../../images/writeups/ripper/5.png"></p>
+<p><img alt="05" loading="lazy" src="https://conper.github.io/images/writeups/ripper/5.png"></p>
 <h6>We download id_rsa.bak</h6>
 <p>Now that we have <em><strong>id_rsa.bak</strong></em>, we still need to know the <strong>username</strong> to log in. We already know the username since it is displayed when the machine starts:</p>
-<p><img alt="06" loading="lazy" src="../../../images/writeups/ripper/6.png"></p>
+<p><img alt="06" loading="lazy" src="https://conper.github.io/images/writeups/ripper/6.png"></p>
 <h6>User Jack</h6>
 <p>Before anything else, we need to grant permissions to the <em><strong>id_rsa.bak</strong></em> file with the following command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>chmod <span style="color:#ae81ff">600</span> id_rsa.bak
 </span></span></code></pre></div><p>But when trying to access via <strong>SSH</strong>, it asks for a <strong>password</strong>, preventing us from entering.</p>
-<p><img alt="07" loading="lazy" src="../../../images/writeups/ripper/7.png"></p>
+<p><img alt="07" loading="lazy" src="https://conper.github.io/images/writeups/ripper/7.png"></p>
 <h6>It prevents us from accessing.</h6>
 <p>So, we can use <strong>John the Ripper</strong> to crack the password.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh2john id_rsa.bak &gt; hash
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>john --wordlist<span style="color:#f92672">=</span>/usr/share/wordlists/rockyou.txt hash
-</span></span></code></pre></div><p><img alt="08" loading="lazy" src="../../../images/writeups/ripper/8.png"></p>
+</span></span></code></pre></div><p><img alt="08" loading="lazy" src="https://conper.github.io/images/writeups/ripper/8.png"></p>
 <h6>John the Ripper result</h6>
 <p>Now that we know the password, we can access.</p>
-<p><img alt="09" loading="lazy" src="../../../images/writeups/ripper/9.png"></p>
+<p><img alt="09" loading="lazy" src="https://conper.github.io/images/writeups/ripper/9.png"></p>
 <h6>We are the user Jack</h6>
 <p>I decide, first of all, to check the users on this machine.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grep /bin/bash /etc/passwd
-</span></span></code></pre></div><p><img alt="10" loading="lazy" src="../../../images/writeups/ripper/10.png"></p>
+</span></span></code></pre></div><p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/ripper/10.png"></p>
 <h6>Users on the machine</h6>
 <p>And we find 3 users: <strong>jack</strong>, <strong>helder</strong>, <strong>root</strong>.</p>
 <p>Now it&rsquo;s time for privilege escalation. In this case, we need to perform 2 privilege escalations to become the root user.</p>
@@ -283,20 +283,20 @@ img:hover {
 <p>Now, let&rsquo;s use <a href="https://github.com/peass-ng/PEASS-ng"><strong>LinPEAS</strong></a>, a tool for enumeration and security auditing. It focuses on identifying files with the <strong>SUID</strong> (Set User ID) and <strong>SGID</strong> (Set Group ID) permission bits set, which can potentially be exploited by attackers to escalate privileges and gain unauthorized access.</p>
 <p>We download <strong>LinPEAS</strong> with the following command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget -q https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh
-</span></span></code></pre></div><p><img alt="11" loading="lazy" src="../../../images/writeups/ripper/11.png"></p>
+</span></span></code></pre></div><p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/ripper/11.png"></p>
 <p>We grant permissions for its execution and run it, saving the results in a file named <em><strong>LinpeasLog</strong></em>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./linpeas.sh &gt; LinpeasLog
 </span></span></code></pre></div><p>And after some time of searching, I come across the following:</p>
-<p><img alt="12" loading="lazy" src="../../../images/writeups/ripper/12.png"></p>
+<p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/ripper/12.png"></p>
 <blockquote>
 <p>📝 <strong>NOTE:</strong> The <strong>opasswd</strong> file stores users&rsquo; old passwords in Linux to prevent them from reusing them when changing their password.</p></blockquote>
 <p>Although it says it was <strong>Jack</strong>’s password, since some people reuse passwords (which is bad practice) we decided to check if it works for <strong>Helder</strong>. I tried it, and it worked. We obtained the user flag.</p>
-<p><img alt="13" loading="lazy" src="../../../images/writeups/ripper/13.png"></p>
+<p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/ripper/13.png"></p>
 <p>Upon realizing that <a href="https://github.com/peass-ng/PEASS-ng"><strong>LinPEAS</strong></a> didn&rsquo;t reveal anything new, I decide to use <a href="https://github.com/DominicBreuker/pspy"><strong>pspy</strong></a>. It is a <strong>process monitoring tool</strong> that provides real-time visibility into running processes without requiring elevated privileges. I downloaded it to my local machine and transferred it to the target machine by hosting a simple <strong>Python</strong> web server.</p>
-<p><img alt="14" loading="lazy" src="../../../images/writeups/ripper/14.png"></p>
+<p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/ripper/14.png"></p>
 <p>Now we grant permissions and execute it.</p>
-<p><img alt="15" loading="lazy" src="../../../images/writeups/ripper/15.png"></p>
-<p><img alt="16" loading="lazy" src="../../../images/writeups/ripper/16.png"></p>
+<p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/ripper/15.png"></p>
+<p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/ripper/16.png"></p>
 <h6>Result</h6>
 <p>We discovered a script that runs every minute as the <strong>root</strong> user (UID 0) and uses <strong>netcat</strong> to connect to localhost on <strong>port 10000</strong>, saving the data exchanged over the connection to a file named out in <em><strong>/root/.local/</strong></em>. Afterwards, it compares the contents of <em><strong>/root/.local/helder.txt</strong></em> and <em><strong>/home/helder/passwd.txt</strong></em>. If they match, it sets the <strong>SUID</strong> bit on the executable located in <em><strong>/usr/bin/</strong></em>, with the filename specified by the content of the out file.</p>
 <p>To achieve this, the first step is to create the <em><strong>passwd.txt</strong></em> file in <em><strong>/home/helder</strong></em> as a symbolic link pointing to <em><strong>/root/.local/helder.txt</strong></em>. This ensures that <em><strong>passwd.txt</strong></em> contains the same content as <em><strong>helder.txt</strong></em>, so the condition will be true.</p>
@@ -307,14 +307,14 @@ img:hover {
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ls -la /home/helder/passwd.txt 
 </span></span></code></pre></div><p>Now, we listen on <strong>port 10000</strong> and send the text &lsquo;<strong>bash</strong>&rsquo;. When the script runs, it will save this input to the out file and set the <strong>SUID</strong> bit on the corresponding executable in <strong>/usr/bin/</strong>. In this case, we&rsquo;re <strong>granting SUID permissions to bash</strong>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;bash&#39;</span> | nc -lvnp <span style="color:#ae81ff">10000</span>
-</span></span></code></pre></div><p><img alt="17" loading="lazy" src="../../../images/writeups/ripper/17.png"></p>
+</span></span></code></pre></div><p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/ripper/17.png"></p>
 <h6>What I mentioned can be observed in the code</h6>
 <p>After executing the exploit, we notice a brief connection. Now, <em><strong>/usr/bin/bash</strong></em> has the <strong>SUID</strong> bit set. Simply running the command <strong>bash -p</strong> grants us root privileges.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>bash -p
-</span></span></code></pre></div><p><img alt="18" loading="lazy" src="../../../images/writeups/ripper/18.png"></p>
+</span></span></code></pre></div><p><img alt="18" loading="lazy" src="https://conper.github.io/images/writeups/ripper/18.png"></p>
 <h6>All the previous process</h6>
 <p>Finally, we navigate to the <em><strong>/root</strong></em> directory and obtain the <strong>root flag</strong>.</p>
-<p><img alt="19" loading="lazy" src="../../../images/writeups/ripper/19.png"></p>
+<p><img alt="19" loading="lazy" src="https://conper.github.io/images/writeups/ripper/19.png"></p>
 
 
   </div>

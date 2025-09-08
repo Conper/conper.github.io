@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Very Easy 🔵">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/very-easy/gift/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -241,23 +241,23 @@ img:hover {
 </style>
 <p><a href="https://hackmyvm.eu/machines/machine.php?vm=Gift">Machine Link</a></p>
 <p>We can see that when we open the machine it tells us its IP:</p>
-<p><img alt="01" loading="lazy" src="../../../images/writeups/gift/1.png"></p>
+<p><img alt="01" loading="lazy" src="https://conper.github.io/images/writeups/gift/1.png"></p>
 <p>So knowing that the IP of the machine is 192.168.18.28, we are going to do a simple NMAP scan to see what ports it has open and what service they are running:</p>
-<p><img alt="02" loading="lazy" src="../../../images/writeups/gift/2.png"></p>
+<p><img alt="02" loading="lazy" src="https://conper.github.io/images/writeups/gift/2.png"></p>
 <h6>NMAP simple scan</h6>
 <p>We can see that this machine hosts a web server on port 80 and that port 22 (ssh) is open.</p>
 <p>This is what we see when we open the web server:</p>
-<p><img alt="03" loading="lazy" src="../../../images/writeups/gift/3.png"></p>
+<p><img alt="03" loading="lazy" src="https://conper.github.io/images/writeups/gift/3.png"></p>
 <p>It tells us not to think too much. So we decided to try to enter through port 22 by brute force with the hydra tool.</p>
 <p>We are going to set the user as root and as the password we will set a dictionary (in this case common.txt) so that it goes word by word trying to see if any word in this dictionary is the correct password:</p>
 <blockquote>
 <p>🚨 <strong>IMPORTANT:</strong> Normally, you cannot access as the root user via SSH for security reasons. Also, the rockyou.txt file is usually used for password cracking. This is an exception because it’s a very easy difficulty machine.</p></blockquote>
-<p><img alt="04" loading="lazy" src="../../../images/writeups/gift/4.png"></p>
+<p><img alt="04" loading="lazy" src="https://conper.github.io/images/writeups/gift/4.png"></p>
 <h6>Result after using hydra</h6>
 <p>And we found it! The user is &ldquo;root&rdquo; and the password is &ldquo;simple&rdquo;. Now we are going to enter through port 22 with this username and password.</p>
-<p><img alt="05" loading="lazy" src="../../../images/writeups/gift/5.png"></p>
+<p><img alt="05" loading="lazy" src="https://conper.github.io/images/writeups/gift/5.png"></p>
 <p>Now that we are inside, with the &ldquo;ls&rdquo; command we see what there is, and we find that we already have the user flag and the root flag.</p>
-<p><img alt="06" loading="lazy" src="../../../images/writeups/gift/6.png"></p>
+<p><img alt="06" loading="lazy" src="https://conper.github.io/images/writeups/gift/6.png"></p>
 <p>So machine completed!</p>
 
 

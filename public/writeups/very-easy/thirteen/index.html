@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Very Easy 🔵">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/very-easy/thirteen/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -242,45 +242,45 @@ img:hover {
 <p><a href="https://hackmyvm.eu/machines/machine.php?vm=Thirteen">Machine Link</a></p>
 <p>To begin with, we perform a <strong>quick scan</strong> with <a href="https://nmap.org/"><strong>Nmap</strong></a> to see which <strong>ports</strong> are <strong>open</strong>.</p>
 <pre tabindex="0"><code>sudo nmap -sS -p- --min-rate 4500 -n -Pn -vvv 192.168.1.233
-</code></pre><p><img alt="01" loading="lazy" src="../../../images/writeups/thirteen/1.png"></p>
+</code></pre><p><img alt="01" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/1.png"></p>
 <p>Now with these <strong>open ports</strong>, we will run a more <strong>intensive scan</strong> to check which <strong>services</strong> are running behind them and their respective <strong>versions</strong>, saving the result in a file called <em><strong>target</strong></em>.</p>
-<p><img alt="02" loading="lazy" src="../../../images/writeups/thirteen/2.png"></p>
+<p><img alt="02" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/2.png"></p>
 <p>This version of <strong>FTP</strong> is <strong>not vulnerable to anonymous login</strong>, so what we’ll do is access the website hosted on the victim machine.</p>
-<p><img alt="03" loading="lazy" src="../../../images/writeups/thirteen/3.png"></p>
+<p><img alt="03" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/3.png"></p>
 <p>When entering, we find this page, and when we click on any of the buttons at the bottom, we <strong>can view the contents of a file</strong>.</p>
-<p><img alt="04" loading="lazy" src="../../../images/writeups/thirteen/4.png"></p>
+<p><img alt="04" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/4.png"></p>
 <p>Other than that, I don’t see anything interesting, so with the <a href="https://github.com/OJ/gobuster"><strong>Gobuster</strong></a> tool we will <strong>enumerate subdirectories</strong> and <strong>files</strong> to see what we can find.</p>
-<p><img alt="05" loading="lazy" src="../../../images/writeups/thirteen/5.png"></p>
+<p><img alt="05" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/5.png"></p>
 <p>Now we can start to understand what might be happening behind the &ldquo;<em><strong>themes</strong></em>&rdquo; parameter we saw earlier, because when we access <em><strong>/config.txt</strong></em>, we see <strong>the same content</strong>.</p>
-<p><img alt="06" loading="lazy" src="../../../images/writeups/thirteen/6.png"></p>
+<p><img alt="06" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/6.png"></p>
 <p>The file name passed through the parameter <strong>is encoded</strong> in some way, and if we pay attention, we see that the letters correspond to others and with a certain logic.
 In the end, we discovered that it is encoded with <a href="https://simple.wikipedia.org/wiki/ROT13"><strong>ROT13</strong></a>.</p>
-<p><img alt="07" loading="lazy" src="../../../images/writeups/thirteen/7.png"></p>
+<p><img alt="07" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/7.png"></p>
 <p>I try reading a system file like <em><strong>/etc/passwd</strong></em>, and it works. It is vulnerable to <a href="https://en.wikipedia.org/wiki/File_inclusion_vulnerability"><strong>LFI</strong></a>(Local File Inclusion).</p>
-<p><img alt="08" loading="lazy" src="../../../images/writeups/thirteen/8.png"></p>
+<p><img alt="08" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/8.png"></p>
 <p>We can’t access the <em><strong>/logs</strong></em> directory, but if we try enumerating inside it with <strong>Gobuster</strong> to see what&rsquo;s there, we find a file.</p>
-<p><img alt="09" loading="lazy" src="../../../images/writeups/thirteen/9.png"></p>
+<p><img alt="09" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/9.png"></p>
 <p>They are the <strong>FTP server logs</strong>, where we see that two files were uploaded, which could be very useful for us.</p>
-<p><img alt="10" loading="lazy" src="../../../images/writeups/thirteen/10.png"></p>
+<p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/10.png"></p>
 <p>The first file is a <strong>Python</strong> program that starts the <strong>FTP server</strong> and <strong>logs</strong> all connections and uploaded or downloaded files to a file.</p>
-<p><img alt="11" loading="lazy" src="../../../images/writeups/thirteen/11.png"></p>
+<p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/11.png"></p>
 <p>It also gives us the password to access.</p>
-<p><img alt="11.5" loading="lazy" src="../../../images/writeups/thirteen/11.5.png"></p>
+<p><img alt="11.5" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/11.5.png"></p>
 <p>The second one is a reverse shell.</p>
-<p><img alt="12" loading="lazy" src="../../../images/writeups/thirteen/12.png"></p>
+<p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/12.png"></p>
 <p>It looks like the <em><strong>rev.sh</strong></em> file is trying to give us a hint of where this is going.
 What we could do is insert a <strong>Reverse Shell</strong> inside the <em><strong>ftp_server.py</strong></em> itself, so when the machine boots up and runs the script to start the <strong>FTP server</strong>, the <strong>Reverse Shell</strong> executes as well, granting access to the machine.</p>
-<p><img alt="13" loading="lazy" src="../../../images/writeups/thirteen/13.png"></p>
+<p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/13.png"></p>
 <h6>Revshell created in: <a href="https://www.revshells.com/">Revshells.com</a></h6>
 <p>I <strong>create the script with the payload</strong> included on my local machine, access via <strong>FTP</strong>, and replace it.</p>
-<p><img alt="14" loading="lazy" src="../../../images/writeups/thirteen/14.png"></p>
+<p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/14.png"></p>
 <h6>Insert the payload</h6>
-<p><img alt="15" loading="lazy" src="../../../images/writeups/thirteen/15.png"></p>
+<p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/15.png"></p>
 <p>We also see that the files belong to the <strong>root</strong> user.</p>
 <p>Now, just start listening on <em><strong>port 4444</strong></em>, <strong>restart</strong> the victim machine, and wait for the <strong>shell</strong> to connect.</p>
-<p><img alt="16" loading="lazy" src="../../../images/writeups/thirteen/16.png"></p>
+<p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/16.png"></p>
 <p>We get direct access as <strong>Root</strong> and capture the flags.</p>
-<p><img alt="17" loading="lazy" src="../../../images/writeups/thirteen/17.png"></p>
+<p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/thirteen/17.png"></p>
 <p>Machine completed!! 💻🔥</p>
 
 

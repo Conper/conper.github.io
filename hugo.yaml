@@ -1,6 +1,7 @@
 baseURL: "https://conper.github.io/"
-relativeURLs: true
-canonifyURLs: false
+relativeURLs: false
+canonifyURLs: true
+uglyURLs: false
 languageCode: "en-us"
 title: "Conper"
 theme: "PaperMod"

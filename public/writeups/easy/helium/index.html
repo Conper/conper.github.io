@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Easy 🟢">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/easy/helium/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -242,32 +242,32 @@ img:hover {
 <p><a href="https://hackmyvm.eu/machines/machine.php?vm=Helium">Machine Link</a></p>
 <p>To start, we perform a basic NMAP scan to find out which ports the target machine has open.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nmap 192.168.18.54
-</span></span></code></pre></div><p><img alt="1" loading="lazy" src="../../../images/writeups/helium/1.png"></p>
+</span></span></code></pre></div><p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/helium/1.png"></p>
 <h6>Simple NMAP scan</h6>
 <p>As we can observe, we find ports 80 and 22 open. Port 80 hosts a webpage, and port 22 runs the SSH service.</p>
 <p>We open the website and encounter the following:</p>
-<p><img alt="2" loading="lazy" src="../../../images/writeups/helium/2.png"></p>
-<p><img alt="3" loading="lazy" src="../../../images/writeups/helium/3.png"></p>
+<p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/helium/2.png"></p>
+<p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/helium/3.png"></p>
 <h6>We view this with Ctrl + U</h6>
 <p>We obtain a possible username: <strong>paul</strong>.</p>
 <p>We enter the file <em><strong>bootstrap.min.css</strong></em> and find the following information that may be useful to us.</p>
-<p><img alt="4" loading="lazy" src="../../../images/writeups/helium/4.png"></p>
+<p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/helium/4.png"></p>
 <p>We test the address /yay/mysecretsound.wav, and indeed, it exists. We download the audio.</p>
 <p>Upon listening to the audio, you realize it might be in Morse code. So, you go to the <a href="https://morsecode.world/"><strong>morsecode.world</strong></a> website to upload the audio and have it decoded.</p>
-<p><img alt="5" loading="lazy" src="../../../images/writeups/helium/5.png"></p>
+<p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/helium/5.png"></p>
 <h6>Result</h6>
 <p>I attempted to log in via SSH with the username <strong>paul</strong> and the password <strong>ETAIE4SIET</strong>, but it didn&rsquo;t work. I noticed a word formed in the audio at the bottom, so I used &ldquo;dancingpassyd&rdquo; as the password and successfully logged in.</p>
-<p><img alt="6" loading="lazy" src="../../../images/writeups/helium/6.png"></p>
+<p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/helium/6.png"></p>
 <p>Now, with the <strong>ls</strong> command, we see that we have the <strong>user flag</strong>.</p>
 <h2 id="privilege-escalation">Privilege escalation<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation">#</a></h2>
 <p>We use the <strong>sudo -l</strong> command to view the actions we can perform with sudo as root while being the user <strong>paul</strong>. As a result, we see that we can execute the <em><strong>/usr/bin/ln</strong></em> binary with sudo as if we were root without needing to know their password.</p>
 <p>We go to the <a href="https://gtfobins.github.io/"><strong>GTFOBins</strong></a> website and look for information on how to escalate privileges using the <strong>sudo ln</strong> command.</p>
-<p><img alt="7" loading="lazy" src="../../../images/writeups/helium/7.png"></p>
+<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/helium/7.png"></p>
 <h6>Search result on GTFOBins</h6>
 <p>We copy the commands and execute them:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ln -fs /bin/sh /bin/ln
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ln
-</span></span></code></pre></div><p><img alt="8" loading="lazy" src="../../../images/writeups/helium/8.png"></p>
+</span></span></code></pre></div><p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/helium/8.png"></p>
 <p>We have successfully become the root and we can obtain their <strong>flag</strong>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat /root/root.txt
 </span></span></code></pre></div>

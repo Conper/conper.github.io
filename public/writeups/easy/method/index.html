@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Easy 🟢">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/easy/method/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -244,56 +244,56 @@ img:hover {
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo arp-scan -I eth0 --localnet
 </span></span></code></pre></div><p>Next, we proceed with a quick scan using <strong>NMAP</strong> to see <strong>which ports are open</strong>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nmap -sS --min-rate <span style="color:#ae81ff">4500</span> -n -Pn 192.168.18.163
-</span></span></code></pre></div><p><img alt="1" loading="lazy" src="../../../images/writeups/method/1.png"></p>
+</span></span></code></pre></div><p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/method/1.png"></p>
 <h6>Ports 22 and 80 are open</h6>
 <p>And now we perform a more detailed scan on those <strong>open ports</strong> and save the result in a file called <em><strong>target.txt</strong></em>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nmap -sCV -p22,80 -n -Pn 192.168.18.163 -oN target.txt
-</span></span></code></pre></div><p><img alt="2" loading="lazy" src="../../../images/writeups/method/2.png"></p>
+</span></span></code></pre></div><p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/method/2.png"></p>
 <h6>Detailed scan of the open ports</h6>
 <p>We observe a website hosted on this machine via <strong>port 80</strong>, but only the default <strong>Nginx</strong> homepage is visible.</p>
 <p>I use <a href="https://github.com/OJ/gobuster"><strong>Gobuster</strong></a> to enumerate <strong>hidden files</strong> and <strong>directories</strong>. We find a file called <em><strong>note.txt</strong></em> that tells us the solution is to enumerate.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gobuster dir -u http://192.168.18.163/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -s <span style="color:#ae81ff">200</span> -b <span style="color:#e6db74">&#34;&#34;</span> --exclude-length <span style="color:#ae81ff">3690</span> -x html,txt,xml,bak
-</span></span></code></pre></div><p><img alt="3" loading="lazy" src="../../../images/writeups/method/3.png"></p>
-<p><img alt="4" loading="lazy" src="../../../images/writeups/method/4.png"></p>
+</span></span></code></pre></div><p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/method/3.png"></p>
+<p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/method/4.png"></p>
 <p>I decide to continue enumerating more <strong>directories</strong> and <strong>files</strong> (<strong>zip</strong>, <strong>htm</strong>, <strong>php</strong>, <strong>c</strong>).</p>
-<p><img alt="5" loading="lazy" src="../../../images/writeups/method/5.png"></p>
+<p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/method/5.png"></p>
 <p>I come across the directory <strong>index.htm</strong>, which contains the following.</p>
-<p><img alt="6" loading="lazy" src="../../../images/writeups/method/6.png"></p>
+<p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/method/6.png"></p>
 <p>If you view the <strong>page source</strong> (Ctrl + U), you will see a <strong>hidden form</strong> that sends information using the <strong>GET method</strong> to a file called <em><strong>secret.php</strong></em>. This form has an input field named <strong>HackMyVM</strong>, and whatever is typed there is sent to the server when the form is submitted.</p>
-<p><img alt="7" loading="lazy" src="../../../images/writeups/method/7.png"></p>
+<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/method/7.png"></p>
 <h6>Content of the hidden form</h6>
 <p>Now, I am going to use <a href="https://portswigger.net/burp/communitydownload"><strong>Burp Suite</strong></a> to send a request including all the data we collected earlier.</p>
-<p><img alt="8" loading="lazy" src="../../../images/writeups/method/8.png"></p>
+<p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/method/8.png"></p>
 <h6>Send a request</h6>
 <p>It tells us to use another method. To do this, I will use the <strong>POST method</strong>. In <strong>Burp Suite</strong>, we have an option to <strong>convert from GET to POST</strong> and <strong>from POST back to GET</strong> with just the click of a button.</p>
-<p><img alt="9" loading="lazy" src="../../../images/writeups/method/9.png"></p>
+<p><img alt="9" loading="lazy" src="https://conper.github.io/images/writeups/method/9.png"></p>
 <h6>Send a request with POST method</h6>
 <p>It says we already found it, so let&rsquo;s put some value in the request.</p>
-<p><img alt="10" loading="lazy" src="../../../images/writeups/method/10.png"></p>
+<p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/method/10.png"></p>
 <p>And we see that we have access to the victim machine as the user <strong>www-data</strong> (the web server user). I am going to send myself a <strong>Reverse Shell</strong> and set up the <strong>TTY</strong>.</p>
-<p><img alt="11" loading="lazy" src="../../../images/writeups/method/11.png"></p>
+<p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/method/11.png"></p>
 <p>Now that we are inside, let&rsquo;s enumerate the existing users on the machine.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grep /bin/bash /etc/passwd
-</span></span></code></pre></div><p><img alt="12" loading="lazy" src="../../../images/writeups/method/12.png"></p>
+</span></span></code></pre></div><p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/method/12.png"></p>
 <h6>Existing users</h6>
 <p>We find two users: <strong>prakasaka</strong> and <strong>root</strong>.</p>
 <h2 id="privilege-escalation-to-prakasaka">Privilege escalation to Prakasaka<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation-to-prakasaka">#</a></h2>
 <p>I decided to navigate to <strong>prakasaka</strong>’s home directory, and as the <strong>www-data</strong> user, we can read the <strong>User Flag</strong>.</p>
-<p><img alt="13" loading="lazy" src="../../../images/writeups/method/13.png"></p>
+<p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/method/13.png"></p>
 <p>The next step to escalate privileges is to read the file <em><strong>secret.php</strong></em>, where we find the <strong>password</strong> for the user <strong>prakasaka</strong>.</p>
-<p><img alt="14" loading="lazy" src="../../../images/writeups/method/14.png"></p>
-<p><img alt="15" loading="lazy" src="../../../images/writeups/method/15.png"></p>
+<p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/method/14.png"></p>
+<p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/method/15.png"></p>
 <h6>We are prakasaka</h6>
 <h2 id="privilege-escalation-to-root">Privilege escalation to Root<a hidden class="anchor" aria-hidden="true" href="#privilege-escalation-to-root">#</a></h2>
 <p>Next, we run the command <strong>sudo -l</strong> to list the commands that the user <strong>prakasaka</strong> is allowed to execute with elevated <strong>sudo</strong> privileges.</p>
-<p><img alt="16" loading="lazy" src="../../../images/writeups/method/16.png"></p>
+<p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/method/16.png"></p>
 <h6>Privilege escalation with the ip binary</h6>
 <p>We have permission to execute <em><strong>/bin/ip</strong></em> with <strong>root privileges</strong>. To escalate to <strong>root</strong>, let’s consult <a href="https://gtfobins.github.io/"><strong>GTFObins</strong></a> and use the recommended commands for <em><strong>/bin/ip</strong></em>. Specifically, we will run the following commands to gain <strong>root</strong> access:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ip netns add foo
 </span></span><span style="display:flex;"><span>sudo ip netns exec foo /bin/sh
 </span></span><span style="display:flex;"><span>sudo ip netns delete foo
 </span></span></code></pre></div><p>We are finally the <strong>root</strong> user and can obtain the <strong>Root Flag</strong>.</p>
-<p><img alt="17" loading="lazy" src="../../../images/writeups/method/17.png"></p>
+<p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/method/17.png"></p>
 
 
   </div>

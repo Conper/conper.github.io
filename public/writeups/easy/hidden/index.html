@@ -10,7 +10,7 @@
 <meta name="description" content="Difficulty: Easy 🟢">
 <meta name="author" content="">
 <link rel="canonical" href="https://conper.github.io/writeups/easy/hidden/">
-<link crossorigin="anonymous" href="../../../assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
@@ -241,44 +241,44 @@ img:hover {
 </style>
 <p><a href="https://hackmyvm.eu/machines/machine.php?vm=Hidden">Machine Link</a></p>
 <p>To start, we will perform a port scan to identify which ports are open.</p>
-<p><img alt="1" loading="lazy" src="../../../images/writeups/hidden/1.png"></p>
+<p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/hidden/1.png"></p>
 <h6>NMAP port scan</h6>
 <p>So the first thing I do is go to the website hosting this machine. And we come across a challenge:</p>
-<p><img alt="2" loading="lazy" src="../../../images/writeups/hidden/2.png"></p>
+<p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/hidden/2.png"></p>
 <h6>Challenge 1</h6>
-<p><img alt="3" loading="lazy" src="../../../images/writeups/hidden/3.png"></p>
+<p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/hidden/3.png"></p>
 <h6>What is observed when inspecting the page</h6>
 <p>I decide to search on <a href="https://www.dcode.fr/"><strong>dCode</strong></a> for the type of symbol encryption the <strong>level 1 puzzle</strong> could be, and I finally find it:</p>
-<p><img alt="4" loading="lazy" src="../../../images/writeups/hidden/4.png"></p>
+<p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/hidden/4.png"></p>
 <h6>Cipher with Rosicrucian Cipher</h6>
-<p><img alt="5" loading="lazy" src="../../../images/writeups/hidden/5.png"></p>
+<p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/hidden/5.png"></p>
 <h6>Decryption</h6>
 <p>We decrypt it and obtain <strong>SYS.HIDDEN.HMV</strong>, which seems to be like a domain. So, I decide to save it in <em><strong>/etc/hosts</strong></em>:</p>
-<p><img alt="6" loading="lazy" src="../../../images/writeups/hidden/6.png"></p>
+<p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/hidden/6.png"></p>
 <p>Now I search again for the website, and we come across <strong>level 2</strong>:</p>
-<p><img alt="7" loading="lazy" src="../../../images/writeups/hidden/7.png"></p>
+<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/hidden/7.png"></p>
 <h6>Challenge 2</h6>
 <p>As I don&rsquo;t see anything on the page, I decide to use <strong>Gobuster</strong> to enumerate subdirectories.</p>
-<p><img alt="8" loading="lazy" src="../../../images/writeups/hidden/8.png"></p>
+<p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/hidden/8.png"></p>
 <h6>Enumeration of subdirectories with Gobuster</h6>
 <p>It gives us this result, but <em><strong>/users</strong></em> and <em><strong>/members</strong></em> are just a rabbit hole, and the directory that will be useful is <em><strong>/weapon</strong></em>. Although it is initially empty, when scanning it again with Gobuster, we find that it contains a <strong>PHP file</strong>.</p>
-<p><img alt="9" loading="lazy" src="../../../images/writeups/hidden/9.png"></p>
+<p><img alt="9" loading="lazy" src="https://conper.github.io/images/writeups/hidden/9.png"></p>
 <h6>We found an interesting PHP file</h6>
 <p>After trying for a while to view the code within <strong>loot.php</strong> and not making any progress, along with other futile attempts, I decide to use <strong>wfuzz</strong> to check if we can <strong>execute any command</strong>s with this <strong>PHP file</strong>.</p>
-<p><img alt="10" loading="lazy" src="../../../images/writeups/hidden/10.png"></p>
+<p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/hidden/10.png"></p>
 <h6>We found the keyword to execute commands</h6>
 <p>And we find the keyword that we should use to <strong>execute commands</strong>. This way, we can now access the machine by running a <em><strong>Reverse Shell</strong></em>.</p>
-<p><img alt="11" loading="lazy" src="../../../images/writeups/hidden/11.png"></p>
+<p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/hidden/11.png"></p>
 <h6>Executing commands as www-data</h6>
 <p>As we can see, we can execute commands as <em><strong>www-data</strong></em>, so we set up a listener on port <strong>4444</strong> and execute the <em><strong>Reverse Shell</strong></em>.</p>
-<p><img alt="12" loading="lazy" src="../../../images/writeups/hidden/12.png">
-<img alt="13" loading="lazy" src="../../../images/writeups/hidden/13.png"></p>
+<p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/hidden/12.png">
+<img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/hidden/13.png"></p>
 <h6>We are inside the machine</h6>
 <p>I decide to set up the <strong>TTY</strong> for convenience, and it would look something like this.</p>
-<p><img alt="14" loading="lazy" src="../../../images/writeups/hidden/14.png"></p>
+<p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/hidden/14.png"></p>
 <p>Let&rsquo;s see which users exist on this machine.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>grep /bin/bash /etc/passwd
-</span></span></code></pre></div><p><img alt="15" loading="lazy" src="../../../images/writeups/hidden/15.png"></p>
+</span></span></code></pre></div><p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/hidden/15.png"></p>
 <h6>System users</h6>
 <p>And we observe that there are three users:</p>
 <ul>
@@ -287,37 +287,37 @@ img:hover {
 <li><em><strong>root</strong></em></li>
 </ul>
 <p>Now, by running <strong>sudo -l</strong>, we see that we can execute <strong>Perl</strong> as the user <em><strong>toreto</strong></em>.</p>
-<p><img alt="16" loading="lazy" src="../../../images/writeups/hidden/16.png"></p>
+<p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/hidden/16.png"></p>
 <p>This allows us to escalate privileges to become <em><strong>toreto</strong></em> quite easily. The first thing we need to do is go to a directory where we have write permissions, such as the <em><strong>/tmp</strong></em> directory, and there we will create a <strong>Perl file</strong> and execute it as the <em><strong>toreto</strong></em> user.</p>
 <p>Here is the <em><strong>Perl code</strong></em>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo -ne <span style="color:#e6db74">&#39;#!/bin/perl \nuse POSIX qw(setuid); \nPOSIX::setuid(0); \nexec &#34;/bin/bash&#34;;&#39;</span> &gt; script.pl
 </span></span></code></pre></div><p>And we execute it like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -u toreto /usr/bin/perl script.pl
 </span></span></code></pre></div><p>This will allow us to obtain the shell of <em><strong>toreto</strong></em>.</p>
-<p><img alt="17" loading="lazy" src="../../../images/writeups/hidden/17.png"></p>
+<p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/hidden/17.png"></p>
 <h6>We are the user toreto</h6>
 <p>I&rsquo;ve tried <strong>sudo -l</strong>, looking to see if any <strong>SUID binaries</strong> could be useful, and I&rsquo;ve even checked the <strong>capabilities</strong>, but found nothing. So, I decided to search through directories, and in the end, I found a file that will help us escalate privileges to the <em><strong>atenea</strong></em> user.</p>
-<p><img alt="18" loading="lazy" src="../../../images/writeups/hidden/18.png"></p>
+<p><img alt="18" loading="lazy" src="https://conper.github.io/images/writeups/hidden/18.png"></p>
 <h6>We found a text file</h6>
 <p>The text file is a dictionary.</p>
-<p><img alt="19" loading="lazy" src="../../../images/writeups/hidden/19.png"></p>
+<p><img alt="19" loading="lazy" src="https://conper.github.io/images/writeups/hidden/19.png"></p>
 <p>So I use <strong>Hydra</strong> to perform a <em><strong>brute-force attack</strong></em> on the <strong>SSH port</strong> (22) with the user <em><strong>atenea</strong></em>, using this dictionary to check if any combination is the correct password.</p>
-<p><img alt="20" loading="lazy" src="../../../images/writeups/hidden/20.png"></p>
+<p><img alt="20" loading="lazy" src="https://conper.github.io/images/writeups/hidden/20.png"></p>
 <h6>We found the password for atenea</h6>
 <p>And the password is <strong>sys8423hmv</strong>, so we log in via <strong>SSH</strong>:</p>
-<p><img alt="21" loading="lazy" src="../../../images/writeups/hidden/21.png"></p>
+<p><img alt="21" loading="lazy" src="https://conper.github.io/images/writeups/hidden/21.png"></p>
 <h6>We are atenea</h6>
 <p>Now we can obtain the <strong>user flag</strong>:</p>
-<p><img alt="22" loading="lazy" src="../../../images/writeups/hidden/22.png"></p>
+<p><img alt="22" loading="lazy" src="https://conper.github.io/images/writeups/hidden/22.png"></p>
 <p>Next, let&rsquo;s <em><strong>escalate privileges</strong></em> to become the <em><strong>root</strong></em> user. By running <strong>sudo -l</strong>, we see that we can execute <strong>socat</strong> as if we were <em><strong>root</strong></em> without password.</p>
-<p><img alt="23" loading="lazy" src="../../../images/writeups/hidden/23.png"></p>
+<p><img alt="23" loading="lazy" src="https://conper.github.io/images/writeups/hidden/23.png"></p>
 <p>I search on <a href="https://gtfobins.github.io/"><strong>GTFOBins</strong></a> and find that we can easily <em><strong>escalate privileges</strong></em>.</p>
-<p><img alt="24" loading="lazy" src="../../../images/writeups/hidden/24.png"></p>
+<p><img alt="24" loading="lazy" src="https://conper.github.io/images/writeups/hidden/24.png"></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo socat stdin exec:/bin/sh
 </span></span></code></pre></div><p>We run it, and there you go, we are now <em><strong>root</strong></em>.</p>
-<p><img alt="25" loading="lazy" src="../../../images/writeups/hidden/25.png"></p>
+<p><img alt="25" loading="lazy" src="https://conper.github.io/images/writeups/hidden/25.png"></p>
 <p>And we obtain the <em><strong>root flag</strong></em>.</p>
-<p><img alt="26" loading="lazy" src="../../../images/writeups/hidden/26.png"></p>
+<p><img alt="26" loading="lazy" src="https://conper.github.io/images/writeups/hidden/26.png"></p>
 <p>Machine pwned!!</p>
 
 
