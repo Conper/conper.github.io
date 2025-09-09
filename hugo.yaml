@@ -1,7 +1,4 @@
 baseURL: "https://conper.github.io/"
-relativeURLs: false
-canonifyURLs: true
-uglyURLs: false
 languageCode: "en-us"
 title: "Conper"
 theme: "PaperMod"
@@ -101,3 +98,7 @@ outputs:
   search:
     - HTML
     - JSON
+
+caches:
+  images:
+    dir: :cacheDir/images
