@@ -2,118 +2,120 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://conper.github.io/writeups/very-easy/</loc>
+    <loc>http://localhost:1313/writeups/very-easy/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/recenum/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/recenum/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/webvulns/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/webvulns/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/</loc>
+    <loc>http://localhost:1313/writeups/easy/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/systemserviceexp/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/systemserviceexp/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/medium/</loc>
+    <loc>http://localhost:1313/writeups/medium/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/crackingbruteforce/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/crackingbruteforce/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/hard/</loc>
+    <loc>http://localhost:1313/writeups/hard/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/windowsad/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/windowsad/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/pe/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/pe/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/postexp/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/postexp/</loc>
   </url><url>
-    <loc>https://conper.github.io/</loc>
+    <loc>http://localhost:1313/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://conper.github.io/projects/ctfmachines/</loc>
+    <loc>http://localhost:1313/projects/ctfmachines/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://conper.github.io/projects/</loc>
+    <loc>http://localhost:1313/projects/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://conper.github.io/projects/ctfchallenges/</loc>
+    <loc>http://localhost:1313/projects/ctfchallenges/</loc>
     <lastmod>2025-04-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://conper.github.io/projects/oports/</loc>
+    <loc>http://localhost:1313/projects/oports/</loc>
     <lastmod>2023-08-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://conper.github.io/projects/tictactoeapp/</loc>
+    <loc>http://localhost:1313/projects/tictactoeapp/</loc>
     <lastmod>2023-05-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/vulnsandexp/linux/</loc>
+    <loc>http://localhost:1313/cybersecurity/vulnsandexp/linux/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/vulnsandexp/proglang/</loc>
+    <loc>http://localhost:1313/cybersecurity/vulnsandexp/proglang/</loc>
   </url><url>
-    <loc>https://conper.github.io/about/</loc>
+    <loc>http://localhost:1313/about/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/atom/</loc>
+    <loc>http://localhost:1313/writeups/easy/atom/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/bah/</loc>
+    <loc>http://localhost:1313/writeups/easy/bah/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/vulnsandexp/proglang/bash/</loc>
+    <loc>http://localhost:1313/cybersecurity/vulnsandexp/proglang/bash/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/beloved/</loc>
+    <loc>http://localhost:1313/writeups/easy/beloved/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/candy/</loc>
+    <loc>http://localhost:1313/crackmes/bingus/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/canto/</loc>
+    <loc>http://localhost:1313/writeups/easy/candy/</loc>
   </url><url>
-    <loc>https://conper.github.io/categories/</loc>
+    <loc>http://localhost:1313/writeups/easy/canto/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/codetwo/</loc>
+    <loc>http://localhost:1313/categories/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/consolelog/</loc>
+    <loc>http://localhost:1313/writeups/easy/codetwo/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/</loc>
+    <loc>http://localhost:1313/writeups/easy/consolelog/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/doc/</loc>
+    <loc>http://localhost:1313/crackmes/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/doubletrouble/</loc>
+    <loc>http://localhost:1313/cybersecurity/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/medium/environment/</loc>
+    <loc>http://localhost:1313/writeups/easy/doc/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/medium/family/</loc>
+    <loc>http://localhost:1313/writeups/easy/doubletrouble/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/very-easy/gift/</loc>
+    <loc>http://localhost:1313/writeups/medium/environment/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/hacking/</loc>
+    <loc>http://localhost:1313/writeups/medium/family/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/helium/</loc>
+    <loc>http://localhost:1313/writeups/very-easy/gift/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/hidden/</loc>
+    <loc>http://localhost:1313/cybersecurity/hacking/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/hundred/</loc>
+    <loc>http://localhost:1313/writeups/easy/helium/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/medium/immortal/</loc>
+    <loc>http://localhost:1313/writeups/easy/hidden/</loc>
   </url><url>
-    <loc>https://conper.github.io/it/</loc>
+    <loc>http://localhost:1313/writeups/easy/hundred/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/very-easy/injection/</loc>
+    <loc>http://localhost:1313/writeups/medium/immortal/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/method/</loc>
+    <loc>http://localhost:1313/it/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/ripper/</loc>
+    <loc>http://localhost:1313/writeups/very-easy/injection/</loc>
   </url><url>
-    <loc>https://conper.github.io/search/</loc>
+    <loc>http://localhost:1313/writeups/easy/method/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/showtime/</loc>
+    <loc>http://localhost:1313/writeups/easy/ripper/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/medium/silentdev/</loc>
+    <loc>http://localhost:1313/writeups/easy/showtime/</loc>
   </url><url>
-    <loc>https://conper.github.io/tags/</loc>
+    <loc>http://localhost:1313/writeups/medium/silentdev/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/very-easy/thirteen/</loc>
+    <loc>http://localhost:1313/tags/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/medium/tombwatcher/</loc>
+    <loc>http://localhost:1313/writeups/very-easy/thirteen/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/medium/voleur/</loc>
+    <loc>http://localhost:1313/writeups/medium/tombwatcher/</loc>
   </url><url>
-    <loc>https://conper.github.io/cybersecurity/vulnsandexp/</loc>
+    <loc>http://localhost:1313/writeups/medium/voleur/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/easy/warez/</loc>
+    <loc>http://localhost:1313/cybersecurity/vulnsandexp/</loc>
   </url><url>
-    <loc>https://conper.github.io/writeups/</loc>
+    <loc>http://localhost:1313/writeups/easy/warez/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/</loc>
   </url>
 </urlset>

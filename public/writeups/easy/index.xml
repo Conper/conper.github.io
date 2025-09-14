@@ -2,121 +2,121 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Easy machines on Conper</title>
-    <link>https://conper.github.io/writeups/easy/</link>
+    <link>http://localhost:1313/writeups/easy/</link>
     <description>Recent content in Easy machines on Conper</description>
     <generator>Hugo -- 0.148.2</generator>
     <language>en-us</language>
-    <atom:link href="https://conper.github.io/writeups/easy/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/writeups/easy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Atom - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/atom/</link>
+      <link>http://localhost:1313/writeups/easy/atom/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/atom/</guid>
+      <guid>http://localhost:1313/writeups/easy/atom/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Bah - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/bah/</link>
+      <link>http://localhost:1313/writeups/easy/bah/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/bah/</guid>
+      <guid>http://localhost:1313/writeups/easy/bah/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Beloved - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/beloved/</link>
+      <link>http://localhost:1313/writeups/easy/beloved/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/beloved/</guid>
+      <guid>http://localhost:1313/writeups/easy/beloved/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Candy - Dockerlabs</title>
-      <link>https://conper.github.io/writeups/easy/candy/</link>
+      <link>http://localhost:1313/writeups/easy/candy/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/candy/</guid>
+      <guid>http://localhost:1313/writeups/easy/candy/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Canto - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/canto/</link>
+      <link>http://localhost:1313/writeups/easy/canto/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/canto/</guid>
+      <guid>http://localhost:1313/writeups/easy/canto/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>CodeTwo - Hack The Box</title>
-      <link>https://conper.github.io/writeups/easy/codetwo/</link>
+      <link>http://localhost:1313/writeups/easy/codetwo/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/codetwo/</guid>
+      <guid>http://localhost:1313/writeups/easy/codetwo/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>ConsoleLog - Dockerlabs</title>
-      <link>https://conper.github.io/writeups/easy/consolelog/</link>
+      <link>http://localhost:1313/writeups/easy/consolelog/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/consolelog/</guid>
+      <guid>http://localhost:1313/writeups/easy/consolelog/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Doc - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/doc/</link>
+      <link>http://localhost:1313/writeups/easy/doc/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/doc/</guid>
+      <guid>http://localhost:1313/writeups/easy/doc/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Doubletrouble - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/doubletrouble/</link>
+      <link>http://localhost:1313/writeups/easy/doubletrouble/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/doubletrouble/</guid>
+      <guid>http://localhost:1313/writeups/easy/doubletrouble/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Helium - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/helium/</link>
+      <link>http://localhost:1313/writeups/easy/helium/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/helium/</guid>
+      <guid>http://localhost:1313/writeups/easy/helium/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Hidden - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/hidden/</link>
+      <link>http://localhost:1313/writeups/easy/hidden/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/hidden/</guid>
+      <guid>http://localhost:1313/writeups/easy/hidden/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Hundred - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/hundred/</link>
+      <link>http://localhost:1313/writeups/easy/hundred/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/hundred/</guid>
+      <guid>http://localhost:1313/writeups/easy/hundred/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Method - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/method/</link>
+      <link>http://localhost:1313/writeups/easy/method/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/method/</guid>
+      <guid>http://localhost:1313/writeups/easy/method/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Ripper - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/ripper/</link>
+      <link>http://localhost:1313/writeups/easy/ripper/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/ripper/</guid>
+      <guid>http://localhost:1313/writeups/easy/ripper/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>ShowTime - Dockerlabs</title>
-      <link>https://conper.github.io/writeups/easy/showtime/</link>
+      <link>http://localhost:1313/writeups/easy/showtime/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/showtime/</guid>
+      <guid>http://localhost:1313/writeups/easy/showtime/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
     <item>
       <title>Warez - HackMyVM</title>
-      <link>https://conper.github.io/writeups/easy/warez/</link>
+      <link>http://localhost:1313/writeups/easy/warez/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/easy/warez/</guid>
+      <guid>http://localhost:1313/writeups/easy/warez/</guid>
       <description>Difficulty: Easy 🟢</description>
     </item>
   </channel>

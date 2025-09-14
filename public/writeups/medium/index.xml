@@ -2,51 +2,51 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Medium machines on Conper</title>
-    <link>https://conper.github.io/writeups/medium/</link>
+    <link>http://localhost:1313/writeups/medium/</link>
     <description>Recent content in Medium machines on Conper</description>
     <generator>Hugo -- 0.148.2</generator>
     <language>en-us</language>
-    <atom:link href="https://conper.github.io/writeups/medium/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/writeups/medium/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Environment - Hack The Box</title>
-      <link>https://conper.github.io/writeups/medium/environment/</link>
+      <link>http://localhost:1313/writeups/medium/environment/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/medium/environment/</guid>
+      <guid>http://localhost:1313/writeups/medium/environment/</guid>
       <description>Difficulty: Medium 🟠</description>
     </item>
     <item>
       <title>Family - HackMyVM</title>
-      <link>https://conper.github.io/writeups/medium/family/</link>
+      <link>http://localhost:1313/writeups/medium/family/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/medium/family/</guid>
+      <guid>http://localhost:1313/writeups/medium/family/</guid>
       <description>Difficulty: Medium 🟠</description>
     </item>
     <item>
       <title>Immortal - HackMyVM</title>
-      <link>https://conper.github.io/writeups/medium/immortal/</link>
+      <link>http://localhost:1313/writeups/medium/immortal/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/medium/immortal/</guid>
+      <guid>http://localhost:1313/writeups/medium/immortal/</guid>
       <description>Difficulty: Medium 🟠</description>
     </item>
     <item>
       <title>SilentDev - By me</title>
-      <link>https://conper.github.io/writeups/medium/silentdev/</link>
+      <link>http://localhost:1313/writeups/medium/silentdev/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/medium/silentdev/</guid>
+      <guid>http://localhost:1313/writeups/medium/silentdev/</guid>
       <description>Difficulty: Medium 🟠</description>
     </item>
     <item>
       <title>TombWatcher - Hack The Box</title>
-      <link>https://conper.github.io/writeups/medium/tombwatcher/</link>
+      <link>http://localhost:1313/writeups/medium/tombwatcher/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/medium/tombwatcher/</guid>
+      <guid>http://localhost:1313/writeups/medium/tombwatcher/</guid>
       <description>Difficulty: Medium 🟠</description>
     </item>
     <item>
       <title>Voleur - Hack The Box</title>
-      <link>https://conper.github.io/writeups/medium/voleur/</link>
+      <link>http://localhost:1313/writeups/medium/voleur/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://conper.github.io/writeups/medium/voleur/</guid>
+      <guid>http://localhost:1313/writeups/medium/voleur/</guid>
       <description>Difficulty: Medium 🟠</description>
     </item>
   </channel>
