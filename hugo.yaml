@@ -38,11 +38,22 @@ menu:
       name: "About Me"
       url: "/about/"
       weight: 7
+    - identifier: search
+      name: "Search"
+      url: "/search/"
+      weight: 8
 
 
 params:
 
   highlightCopy: true
+
+  fuseOpts:
+    isCaseSensitive: true
+    shouldSort: true
+    threshold: 0.2
+    distance: 100
+    minMatchCharLength: 2
 
   assets:
     favicon: "assets/favicon.ico"
@@ -73,6 +84,8 @@ params:
         url: "/it/"
       - name: "About Me"
         url: "/about/"
+      - name: "Search"
+        url: "/search/"
 
   socialIcons:
     - name: "github"
