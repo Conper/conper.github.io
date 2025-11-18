@@ -70,7 +70,7 @@ params:
     subtitle: |
       Student and passionate about cybersecurity<br>
       <div style="margin-top:4px; display:inline-block; background:#0984ce; color:white; padding:2px 6px; border-radius:6px; font-size:0.8em;">+30 Writeups</div>
-      <div style="margin-top:4px; display:inline-block; background:#16a34a; color:white; padding:2px 6px; border-radius:6px; font-size:0.8em;">+100 Hacked Machines</div>
+      <div style="margin-top:4px; margin-left:10px; display:inline-block; background:#16a34a; color:white; padding:2px 6px; border-radius:6px; font-size:0.8em;">+100 Hacked Machines</div>
     imageUrl: "images/avatar.jpg"
     imageTitle: "My profile picture"
     buttons:
